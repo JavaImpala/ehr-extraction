@@ -22,19 +22,16 @@ public class Main {
 		String location="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full";
 		File folder=new File(location);
 		
-		/*
-		 * 	3 01.03.2021 Skrevet av: Torbjørn Torsvik Rapport Rapport dato: 01.03.2021
-		 */
+		
 		
 		Map<Predicate<String>,Supplier<ElementMaker>> elementMakers=new HashMap<>();
 		
 		//lager reportMaker
 		
-		Pattern p = Pattern.compile(ProfileReportMaker.initiateRegex);
 		
 		elementMakers.put(
 				line->{
-					return p.matcher(line).matches();
+					return ProfileReportMaker.initiateRegexPattern.matcher(line).matches();
 				}, 
 				()->ProfileReportMaker.create());
 		
@@ -49,7 +46,12 @@ public class Main {
 		for(File fileEntry:folder.listFiles()) {
 			
 			if(activeMaker.getValue()!=null){
-				activeMaker.getValue().terminate();
+				activeMaker.getValue().finalize();
+				
+				System.out.println(activeMaker.getValue());
+				
+				noteCounter++;
+				
 				activeMaker.setValue(null);
 			}
 			
@@ -70,7 +72,13 @@ public class Main {
 							for(Entry<Predicate<String>,Supplier<ElementMaker>> entry:elementMakers.entrySet()) {
 								if(entry.getKey().test(line)) {
 									if(activeMaker.getValue()!=null) {
-										activeMaker.getValue().terminate();
+										
+										
+										activeMaker.getValue().finalize();
+										
+										System.out.println(activeMaker.getValue());
+										
+										noteCounter++;
 									}
 									
 									

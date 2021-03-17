@@ -9,14 +9,15 @@ public class ProfilReport implements Closable{
 	private String writtenStringDate="01.01.1970";
 	private String daytimeReportType="Ukjent";
 	
-	private String statusChanged="Uendret";
+	private boolean changedPlan=false;
+	private boolean changedStatus=false;
 	
 	private boolean priority=false;
 	
 	private String author="Ukjent";
 	
 	private StringBuilder contentBuilder=new StringBuilder();
-	private String content="";
+	private String content="halo?";
 
 	private boolean closed=false;
 	
@@ -52,13 +53,11 @@ public class ProfilReport implements Closable{
 		this.daytimeReportType = daytimeReportType;
 	}
 
-	public String getStatusChanged() {
-		return statusChanged;
+	public void setChangedStatus(boolean statusChanged) {
+		this.changedStatus = statusChanged;
 	}
-
-	public void setStatusChanged(String statusChanged) {
-		this.statusChanged = statusChanged;
-	}
+	
+	
 
 	public boolean isPriority() {
 		return priority;
@@ -84,6 +83,14 @@ public class ProfilReport implements Closable{
 		this.contentBuilder.append(string);
 	}
 	
+	public boolean isChangePlan() {
+		return changedPlan;
+	}
+
+	public void setChangedPlan(boolean changePlan) {
+		this.changedPlan = changePlan;
+	}
+
 	public boolean isClosed(){
 		return closed;
 	}
@@ -95,8 +102,10 @@ public class ProfilReport implements Closable{
 	@Override
 	public String toString() {
 		return "ProfilReport [reportNumber=" + reportNumber + ", stringDate=" + stringDate + ", writtenStringDate="
-				+ writtenStringDate + ", daytimeReportType=" + daytimeReportType + ", statusChanged=" + statusChanged
-				+ ", priority=" + priority + ", author=" + author + ", contentBuilder=" + contentBuilder + ", content="
+				+ writtenStringDate + ", daytimeReportType=" + daytimeReportType + ", statusChanged=" + changedStatus
+				+ ", priority=" + priority + ", author=" + author + ", content="
 				+ content + "]";
 	}
+
+	
 }

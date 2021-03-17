@@ -13,7 +13,9 @@ public class ProfileReportMaker implements ElementMaker{
 	
 	private Runnable onHappy=()->{};
 	
-	public final static String initiateRegex= "^([0-9]+).+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).+Skrevet av:(.+)Rapport.+Rapport dato:.+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).*";
+	private final static String initiateRegex= "^([0-9]+).+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).+Skrevet av:(.+)Rapport.+Rapport dato:.+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).*";
+	public final static Pattern initiateRegexPattern=Pattern.compile(initiateRegex);
+	
 	
 	private final Consumer<String> lineReaders;
 	
@@ -21,86 +23,47 @@ public class ProfileReportMaker implements ElementMaker{
 		
 		report=new ProfilReport();
 		
-		
 		MutableObject<Consumer<String>> reader=new MutableObject<>();
 		
-		Pattern p = Pattern.compile("\\b"+"Vakt:"+"[ ]*:[ ]*'(.+?)'");
-		
 		Consumer<String> reportReader=line->{
-			
-			System.out.println("REST=> "+line);
-			
-			
-			/*
-			if(matcher.matches()){
-				System.out.println("****************** "+line);
-				
-				for(int i=0;i<matcher.groupCount();i++) {
-					
-				}
-				
-				int reportNumber=Integer.valueOf(matcher.group(1));
-				String stringDate=matcher.group(2);
-				String author=matcher.group(5);
-				String writtenStringDate=matcher.group(6);
-				
+			if(initiateRegexPattern.matcher(line).matches()) {
+				System.out.println("FFFUUUUUUUUUUUUUUUUUUUUUUCKUP");
 			}
-			*/
+			
+			report.addContent(line);
 		};
 		
 		
+		/*
+		 * Vakt: Dagvakt Status: Uendret Endre tiltak: Nei Prioritet gitt: Nei
+		 * 
+		 */ 
+		
 		Consumer<String> secondLineReader=line->{
+			report.setDaytimeReportType(getValue(line,"Vakt:"));
 			
-			System.out.println("SECOND=> "+line);
+			report.setChangedStatus((getValue(line,"Status:")=="Uendret")?false:true);
+			report.setChangedPlan((getValue(line,"Endre tiltak:")=="Nei")?false:true);
 			
-			System.out.println(getValue(line,"Vakt: "));
-			System.out.println(getValue(line,"Status:"));
-			System.out.println(getValue(line,"Endre tiltak:"));
-			System.out.println(getValue(line,"Prioritet gitt:"));
-			
-			/*
-			 * Vakt: Dagvakt Status: Uendret Endre tiltak: Nei Prioritet gitt: Nei
-			 * 
-			 * (?<=\b(Vakt:)\s)(\w+) = Dagvakt
-			 * 
-			if(matcher.matches()){
-				System.out.println("****************** "+line);
-				
-				for(int i=0;i<matcher.groupCount();i++) {
-					
-				}
-				
-				int reportNumber=Integer.valueOf(matcher.group(1));
-				String stringDate=matcher.group(2);
-				String author=matcher.group(5);
-				String writtenStringDate=matcher.group(6);
-				
-			}
-			*/
+			report.setPriority((getValue(line,"Prioritet gitt:")=="Nei")?false:true);
 			
 			reader.setValue(reportReader);
 		};
 		
+		Pattern p = Pattern.compile("(\\w+)");
+		
+		//"^([0-9]+).+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).+Skrevet av:(.+)Rapport.+Rapport dato:.+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).*"
+		//3 01.03.2021 Skrevet av: Torbjørn Torsvik Rapport Rapport dato: 01.03.2021
+		
 		Consumer<String> firstLineReader=line->{
+			Matcher matcher = initiateRegexPattern.matcher(line);
 			
-			
-			System.out.println("FIRST=> "+line);
-			
-			/*
-			if(matcher.matches()){
-				System.out.println("****************** "+line);
-				
-				for(int i=0;i<matcher.groupCount();i++) {
-					
-				}
-				
-				int reportNumber=Integer.valueOf(matcher.group(1));
-				String stringDate=matcher.group(2);
-				String author=matcher.group(5);
-				String writtenStringDate=matcher.group(6);
-				
+			if(matcher.find()){	
+				report.setReportNumber(Integer.valueOf(matcher.group(1)));
+				report.setAuthor(matcher.group(5).trim());
+				report.setStringDate(matcher.group(2));
+				report.setWrittenStringDate(matcher.group(6));
 			}
-			*/
 			
 			reader.setValue(secondLineReader);
 		};
@@ -116,8 +79,9 @@ public class ProfileReportMaker implements ElementMaker{
 	}
 	
 	public static String getValue(String testStr, String key){
-        Pattern p = Pattern.compile("(?<=\b"+key+"\bs)(bw+)");
+        Pattern p = Pattern.compile("(?<="+key+"\\s)(\\w+)");
         Matcher m = p.matcher(testStr);
+       
         return  m.find() ? m.group(1): null;
     }
 	
@@ -136,7 +100,16 @@ public class ProfileReportMaker implements ElementMaker{
 	}
 	
 	@Override
-	public void terminate() {
+	public void finalize() {
+		report.finalize();
 		
+		if(report.getContent().equals("")) {
+			//throw new IllegalStateException(this.toString());
+		}
+	}
+
+	@Override
+	public String toString() {
+		return "ProfileReportMaker [report=" + report + "]";
 	}
 }
