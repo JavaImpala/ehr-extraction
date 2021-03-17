@@ -61,6 +61,8 @@ public class ProfileReportMaker implements ElementMaker{
 			/*
 			 * Vakt: Dagvakt Status: Uendret Endre tiltak: Nei Prioritet gitt: Nei
 			 * 
+			 * (?<=\b(Vakt:)\s)(\w+) = Dagvakt
+			 * 
 			if(matcher.matches()){
 				System.out.println("****************** "+line);
 				
