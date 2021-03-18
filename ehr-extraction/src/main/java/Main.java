@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import profilTools.ProfileReportMaker;
+import reports.ProfileReportMaker;
 import util.ElementMaker;
 import util.PageHeaderIdentifier;
 

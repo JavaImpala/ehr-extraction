@@ -1,4 +1,4 @@
-package profilTools;
+package reports;
 
 import util.Closable;
 
@@ -94,7 +94,7 @@ public class ProfilReport implements Closable{
 	public boolean isClosed(){
 		return closed;
 	}
-	public void settle() {
+	public void close() {
 		this.closed=true;
 		this.content=contentBuilder.toString();
 	}

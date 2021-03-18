@@ -1,4 +1,4 @@
-package profilTools;
+package reports;
 
 import java.util.function.Consumer;
 import java.util.regex.Matcher;
@@ -101,7 +101,7 @@ public class ProfileReportMaker implements ElementMaker{
 	
 	@Override
 	public void settle() {
-		report.settle();
+		report.close();
 		
 		if(report.getContent().equals("")) {
 			//throw new IllegalStateException(this.toString());
