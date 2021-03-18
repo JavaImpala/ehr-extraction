@@ -94,7 +94,7 @@ public class ProfilReport implements Closable{
 	public boolean isClosed(){
 		return closed;
 	}
-	public void finalize() {
+	public void settle() {
 		this.closed=true;
 		this.content=contentBuilder.toString();
 	}

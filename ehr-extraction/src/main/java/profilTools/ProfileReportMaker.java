@@ -100,8 +100,8 @@ public class ProfileReportMaker implements ElementMaker{
 	}
 	
 	@Override
-	public void finalize() {
-		report.finalize();
+	public void settle() {
+		report.settle();
 		
 		if(report.getContent().equals("")) {
 			//throw new IllegalStateException(this.toString());

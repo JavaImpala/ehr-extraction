@@ -1,9 +1,18 @@
 package profilTools;
 
-public class ProfilePlanMaker {
+import java.util.function.Supplier;
+import java.util.regex.Pattern;
+
+import util.ChainMatch;
+import util.GroupParser;
+import util.PageProccessor;
+import util.LineListener;
+import util.Matcher;
+
+public class ProfilePlanElementGroup implements GroupParser{
 	/*
 	 *
-	 * TROMSØ Kommune 05.03.2021 13:41:10
+	 *  TROMSØ Kommune 05.03.2021 13:41:10
 		Rapport kjørt av: Torbjørn Torsvik Utskrift av pasientjournal Side 11 / 356
 		Bruker: Kalle Krank
 		Fødselsdato / Persnr: 30.10.1987 / 56144
@@ -60,6 +69,29 @@ public class ProfilePlanMaker {
 		morgenmedisin, ikke vært på kjøkkenet idag og sa hun ikke skulle komme til middag heller.
 		19 17.02.2021 Skrevet av: Torbjørn Torsvik Rapport Rapport dato: 17.02.2021
 	 */
+	
+	private static final String startRegex="";
+	
+	private static final Supplier<Matcher> startMatcher=()->new ChainMatch.Builder()
+			.addPattern(Pattern.compile("^Plan/Rapport.*"))
+			.addPattern(Pattern.compile("^Plankategori:.*"))
+			.addPattern(Pattern.compile("^Planområde:.*"))
+			.addPattern(Pattern.compile("^Tiltak:.*"))
+			.build();
+
+	@Override
+	public PageProccessor getPageProcessor() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void settle() {
+		// TODO Auto-generated method stub
+		
+	}
+	
+	
 	
 	
 }

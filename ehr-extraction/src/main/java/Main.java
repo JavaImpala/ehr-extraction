@@ -14,6 +14,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import profilTools.ProfileReportMaker;
 import util.ElementMaker;
+import util.PageHeaderIdentifier;
 
 public class Main {
 	public static void main( String[] args )  
@@ -46,7 +47,7 @@ public class Main {
 		for(File fileEntry:folder.listFiles()) {
 			
 			if(activeMaker.getValue()!=null){
-				activeMaker.getValue().finalize();
+				activeMaker.getValue().settle();
 				
 				System.out.println(activeMaker.getValue());
 				
@@ -67,22 +68,32 @@ public class Main {
 						BufferedReader br=new BufferedReader(new FileReader(fileEntry));
 						String line;
 						
+						Predicate<String> atEndOfHeader=s->PageHeaderIdentifier.lastHeaderLinePattern.matcher(s).matches();
+						boolean inHeader=true;
+						
 						while((line=br.readLine())  !=null) {
+							
+							if(inHeader) {
+								if(atEndOfHeader.test(line)) {
+									inHeader=false;
+								}
+								
+								continue;
+							}
 							
 							for(Entry<Predicate<String>,Supplier<ElementMaker>> entry:elementMakers.entrySet()) {
 								if(entry.getKey().test(line)) {
 									if(activeMaker.getValue()!=null) {
 										
-										
-										activeMaker.getValue().finalize();
+										activeMaker.getValue().settle();
 										
 										System.out.println(activeMaker.getValue());
 										
 										noteCounter++;
 									}
 									
-									
 									ElementMaker newMaker = entry.getValue().get();
+									
 									newMaker.setHappyListener(()->{
 										activeMaker.setValue(null);
 									});
