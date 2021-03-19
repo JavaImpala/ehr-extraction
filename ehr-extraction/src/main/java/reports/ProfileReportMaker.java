@@ -6,12 +6,13 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import util.ElementMaker;
+import util.lineListeners.LineListenerState;
+import util.lineListeners.ObservableLineListener;
 
-public class ProfileReportMaker implements ElementMaker{
+public class ProfileReportMaker implements ObservableLineListener{
 	private final ProfilReport report;
 	
-	private Runnable onHappy=()->{};
+	private LineListenerState state=LineListenerState.READY;
 	
 	private final static String initiateRegex= "^([0-9]+).+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).+Skrevet av:(.+)Rapport.+Rapport dato:.+((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).*";
 	public final static Pattern initiateRegexPattern=Pattern.compile(initiateRegex);
@@ -92,24 +93,23 @@ public class ProfileReportMaker implements ElementMaker{
 	@Override
 	public void readLine(String line) {
 		this.lineReaders.accept(line);
+		
+		
 	}
 	
-	@Override
-	public void setHappyListener(Runnable onHappy) {
-		this.onHappy=onHappy;
-	}
-	
-	@Override
 	public void settle() {
 		report.close();
 		
-		if(report.getContent().equals("")) {
-			//throw new IllegalStateException(this.toString());
-		}
+		state=LineListenerState.DONE;
 	}
 
 	@Override
 	public String toString() {
 		return "ProfileReportMaker [report=" + report + "]";
+	}
+
+	@Override
+	public LineListenerState getState() {
+		return state;
 	}
 }

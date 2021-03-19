@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import util.ChainMatch;
 import util.GroupParser;
 import util.PageProccessor;
-import util.LineListener;
+import util.lineListeners.LineListener;
 import util.Matcher;
 
 public class ProfilCarePlanParser implements GroupParser{

@@ -13,8 +13,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import reports.ProfileReportMaker;
-import util.ElementMaker;
 import util.PageHeaderIdentifier;
+import util.lineListeners.ObservableLineListener;
 
 public class Main {
 	public static void main( String[] args )  
@@ -25,7 +25,7 @@ public class Main {
 		
 		
 		
-		Map<Predicate<String>,Supplier<ElementMaker>> elementMakers=new HashMap<>();
+		Map<Predicate<String>,Supplier<ObservableLineListener>> elementMakers=new HashMap<>();
 		
 		//lager reportMaker
 		
@@ -42,7 +42,7 @@ public class Main {
 		
 		int noteCounter=0;
 		
-		MutableObject<ElementMaker> activeMaker=new MutableObject<>();
+		MutableObject<ObservableLineListener> activeMaker=new MutableObject<>();
 		
 		for(File fileEntry:folder.listFiles()) {
 			
@@ -81,7 +81,7 @@ public class Main {
 								continue;
 							}
 							
-							for(Entry<Predicate<String>,Supplier<ElementMaker>> entry:elementMakers.entrySet()) {
+							for(Entry<Predicate<String>,Supplier<ObservableLineListener>> entry:elementMakers.entrySet()) {
 								if(entry.getKey().test(line)) {
 									if(activeMaker.getValue()!=null) {
 										
@@ -92,7 +92,7 @@ public class Main {
 										noteCounter++;
 									}
 									
-									ElementMaker newMaker = entry.getValue().get();
+									ObservableLineListener newMaker = entry.getValue().get();
 									
 									newMaker.setHappyListener(()->{
 										activeMaker.setValue(null);

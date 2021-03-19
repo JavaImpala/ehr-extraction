@@ -1,8 +1,8 @@
 package reports;
 
-import util.Closable;
+import util.endable.Endable;
 
-public class ProfilReport implements Closable{
+public class ProfilReport{
 	private int reportNumber=-1;
 	
 	private String stringDate="01.01.1970";
