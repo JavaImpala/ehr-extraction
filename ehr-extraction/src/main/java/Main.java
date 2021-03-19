@@ -14,7 +14,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 import reports.ProfileReportMaker;
 import util.PageHeaderIdentifier;
-import util.lineListeners.ObservableLineListener;
+import util.lineListeners.ObservableLineParser;
 
 public class Main {
 	public static void main( String[] args )  
@@ -25,7 +25,7 @@ public class Main {
 		
 		
 		
-		Map<Predicate<String>,Supplier<ObservableLineListener>> elementMakers=new HashMap<>();
+		Map<Predicate<String>,Supplier<ObservableLineParser>> elementMakers=new HashMap<>();
 		
 		//lager reportMaker
 		
@@ -42,7 +42,7 @@ public class Main {
 		
 		int noteCounter=0;
 		
-		MutableObject<ObservableLineListener> activeMaker=new MutableObject<>();
+		MutableObject<ObservableLineParser> activeMaker=new MutableObject<>();
 		
 		for(File fileEntry:folder.listFiles()) {
 			
@@ -81,7 +81,7 @@ public class Main {
 								continue;
 							}
 							
-							for(Entry<Predicate<String>,Supplier<ObservableLineListener>> entry:elementMakers.entrySet()) {
+							for(Entry<Predicate<String>,Supplier<ObservableLineParser>> entry:elementMakers.entrySet()) {
 								if(entry.getKey().test(line)) {
 									if(activeMaker.getValue()!=null) {
 										
@@ -92,7 +92,7 @@ public class Main {
 										noteCounter++;
 									}
 									
-									ObservableLineListener newMaker = entry.getValue().get();
+									ObservableLineParser newMaker = entry.getValue().get();
 									
 									newMaker.setHappyListener(()->{
 										activeMaker.setValue(null);

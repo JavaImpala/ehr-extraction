@@ -7,10 +7,10 @@ import java.util.function.Consumer;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import util.endable.EndableLineListener;
+import util.endable.EndableLineParser;
 
-public class SequenceLineListeners implements EndableLineListener{
-	private final EndableLineListener lineListener;
+public class SequenceLineListeners implements EndableLineParser{
+	private final EndableLineParser lineListener;
 	
 	private SequenceLineListeners(List<SequenceLineListener> makers) {
 		MutableObject<Consumer<String>> globalListener=new MutableObject<>();
@@ -41,7 +41,7 @@ public class SequenceLineListeners implements EndableLineListener{
 		//MutableObject<String> prevLine=new MutableObject<>("");
 		MutableInt currentIndex=new MutableInt(0);
 		
-		lineListener=new EndableLineListener() {
+		lineListener=new EndableLineParser() {
 			
 			private boolean ended=false;
 			

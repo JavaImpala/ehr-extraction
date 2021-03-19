@@ -1,17 +1,17 @@
 package util.endable;
 
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
-public class EndableWrapper implements EndableLineListener{
+public class EndableWrapper implements EndableLineParser{
 	
-	private final LineListener listener;
+	private final LineParser listener;
 	private boolean isEnded=false;
 	
-	private EndableWrapper(LineListener listener) {
+	private EndableWrapper(LineParser listener) {
 		this.listener = listener;
 	}
 	
-	public static EndableWrapper wrap(LineListener listener) {
+	public static EndableWrapper wrap(LineParser listener) {
 		return new EndableWrapper(listener);
 	}
 

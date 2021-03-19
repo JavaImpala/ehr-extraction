@@ -1,11 +1,8 @@
 package reports.readers;
 
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
-public class FirstPageReportReader implements LineListener{
-	
-	
-	
+public class FirstPageReportReader implements LineParser{
 	
 	private FirstPageReportReader() {
 		

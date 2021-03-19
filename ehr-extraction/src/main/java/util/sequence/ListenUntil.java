@@ -1,9 +1,9 @@
 package util.sequence;
 
 import util.lineListeners.LineListenerState;
-import util.lineListeners.ObservableLineListener;
+import util.lineListeners.ObservableLineParser;
 
-public class ListenUntil implements ObservableLineListener{
+public class ListenUntil implements ObservableLineParser{
 	
 	
 	

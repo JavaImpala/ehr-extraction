@@ -1,23 +1,23 @@
 package util.sequence;
 
-import util.endable.EndableLineListener;
+import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
 public class ListenOnce implements SequenceLineListener	{
 
 	private boolean shouldEnd=false;
-	private EndableLineListener wrapped;
+	private EndableLineParser wrapped;
 	
-	private ListenOnce(EndableLineListener wrapped) {
+	private ListenOnce(EndableLineParser wrapped) {
 		this.wrapped=wrapped;
 	}
 	
-	public static ListenOnce wrap(EndableLineListener wrapped) {
+	public static ListenOnce wrap(EndableLineParser wrapped) {
 		return new ListenOnce(wrapped);
 	}
 	
-	public static ListenOnce wrap(LineListener wrapped) {
+	public static ListenOnce wrap(LineParser wrapped) {
 		return new ListenOnce(EndableWrapper.wrap(wrapped));
 	}
 	

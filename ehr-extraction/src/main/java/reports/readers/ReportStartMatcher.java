@@ -66,7 +66,7 @@ import util.Matcher;
 	19 17.02.2021 Skrevet av: Torbjørn Torsvik Rapport Rapport dato: 17.02.2021
 */
 
-public class InitiateProfilePlanPageProcessor {
+public class ReportStartMatcher {
 	private static final Supplier<Matcher> startMatcher=()->new ChainMatch.Builder()
 			.addPattern(Pattern.compile("^Plan/Rapport.*"))
 			.addPattern(Pattern.compile("^Plankategori:.*"))

@@ -1,7 +1,7 @@
 package util;
 
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
-public interface Matcher extends LineListener{
+public interface Matcher extends LineParser{
 	public MatchingState getState();
 }

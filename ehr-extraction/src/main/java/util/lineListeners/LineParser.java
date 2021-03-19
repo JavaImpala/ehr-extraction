@@ -1,5 +1,5 @@
 package util.lineListeners;
 
-public interface LineListener {
+public interface LineParser {
 	public void readLine(String line);
 }

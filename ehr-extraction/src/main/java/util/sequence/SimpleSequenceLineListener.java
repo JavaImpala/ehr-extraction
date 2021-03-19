@@ -1,21 +1,21 @@
 package util.sequence;
 
-import util.endable.EndableLineListener;
+import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
 public class SimpleSequenceLineListener implements SequenceLineListener{
-	private final EndableLineListener listener;
+	private final EndableLineParser listener;
 	
-	private SimpleSequenceLineListener(EndableLineListener listener) {
+	private SimpleSequenceLineListener(EndableLineParser listener) {
 		this.listener=listener;
 	}
 	
-	public static SimpleSequenceLineListener create(EndableLineListener listener) {
+	public static SimpleSequenceLineListener create(EndableLineParser listener) {
 		return new SimpleSequenceLineListener(listener);
 	}
 	
-	public static SimpleSequenceLineListener create(LineListener listener) {
+	public static SimpleSequenceLineListener create(LineParser listener) {
 		return new SimpleSequenceLineListener(EndableWrapper.wrap(listener));
 	}
 	

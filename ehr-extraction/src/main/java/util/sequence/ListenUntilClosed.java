@@ -1,22 +1,22 @@
 package util.sequence;
 
-import util.endable.EndableLineListener;
+import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
-import util.lineListeners.LineListener;
+import util.lineListeners.LineParser;
 
 public class ListenUntilClosed implements SequenceLineListener{
 	private boolean shouldEnd=false;
-	private EndableLineListener wrapped;
+	private EndableLineParser wrapped;
 	
-	private ListenUntilClosed(EndableLineListener wrapped) {
+	private ListenUntilClosed(EndableLineParser wrapped) {
 		this.wrapped=wrapped;
 	}
 	
-	public static ListenUntilClosed wrap(EndableLineListener wrapped) {
+	public static ListenUntilClosed wrap(EndableLineParser wrapped) {
 		return new ListenUntilClosed(wrapped);
 	}
 	
-	public static SequenceLineListener wrap(LineListener wrapped) {
+	public static SequenceLineListener wrap(LineParser wrapped) {
 		return new ListenUntilClosed(EndableWrapper.wrap(wrapped));
 	}
 	
