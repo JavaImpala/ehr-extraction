@@ -3,8 +3,8 @@ package reports.readers;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import util.ChainMatch;
-import util.Matcher;
+import util.matcher.ChainMatch;
+import util.matcher.Matcher;
 
 /*
 *

@@ -3,11 +3,11 @@ package reports;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
-import util.ChainMatch;
 import util.lineListeners.LineParser;
+import util.matcher.ChainMatch;
+import util.matcher.Matcher;
 import util.pageProcessor.PageParserManager;
 import util.pageProcessor.PageParser;
-import util.Matcher;
 
 public class ProfilCarePlanParser implements PageParserManager{
 	

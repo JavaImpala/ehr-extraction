@@ -1,4 +1,4 @@
-package util;
+package util.matcher;
 
 import util.lineListeners.LineParser;
 
