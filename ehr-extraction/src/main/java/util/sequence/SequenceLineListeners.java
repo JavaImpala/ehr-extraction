@@ -18,30 +18,6 @@ public class SequenceLineListeners implements EndableLineParser{
 	private final EndableLineParser lineListener;
 	
 	private SequenceLineListeners(List<SequenceLineListener> makers) {
-		MutableObject<Consumer<String>> globalListener=new MutableObject<>();
-		
-		Consumer<String> next=null;
-		
-		for(int i=makers.size()-1;i>=0;i--) {
-			SequenceLineListener listener=makers.get(i);
-			
-			Consumer<String> nextInLine=next; //caches next
-			
-			Consumer<String> stringConsumer=s->{
-				
-				listener.readLine(s);
-				
-				if(nextInLine!=null) {
-					globalListener.setValue(nextInLine);
-				}
-				
-			};
-			
-			next=stringConsumer;
-			globalListener.setValue(stringConsumer);
-		}
-		
-		
 		
 		//MutableObject<String> prevLine=new MutableObject<>("");
 		MutableInt currentIndex=new MutableInt(0);
