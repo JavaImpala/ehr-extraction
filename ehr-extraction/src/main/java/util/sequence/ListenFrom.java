@@ -1,33 +1,37 @@
 package util.sequence;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 import util.endable.EndableLineParser;
+import util.matcher.Matcher;
 
 public class ListenFrom implements SequenceLineListener{
 	
 	
 	private final EndableLineParser listener;
-	private final Predicate<String> startLine;
+	private final Matcher shouldStart;
 	
-	private ListenFrom(EndableLineParser listener,Predicate<String> startLine) {
+	private ListenFrom(EndableLineParser listener,Matcher shouldStart) {
 		this.listener=listener;
-		this.startLine=startLine;
+		this.shouldStart=shouldStart;
 	}
 	
-	public static SequenceLineListener listenFrom(EndableLineParser listener,Pattern startLine) {
-		return new ListenFrom(listener,s->startLine.matcher(s).matches());
+	public static SequenceLineListener listenFrom(EndableLineParser listener,Matcher shouldStart) {
+		return new ListenFrom(
+				listener,
+				shouldStart);
 	}
 	
-	public static SequenceLineListener listenFromAfterMatch(EndableLineParser listener,Pattern startLine) {
+	public static SequenceLineListener listenFromAfterMatch(EndableLineParser listener,Matcher shouldStart) {
 		return new ListenFrom(
 				new SequenceLineListeners
 					.Builder()
 					.addListener(ListenOnce.create())
 					.addListener(SimpleSequenceLineListener.create(listener))
 					.build(),
-				s->startLine.matcher(s).matches());
+				shouldStart);
 	}
 
 
@@ -36,15 +40,7 @@ public class ListenFrom implements SequenceLineListener{
 		listener.readLine(line);
 	}
 
-	@Override
-	public boolean shouldStart(String line) {
-		return startLine.test(line);
-	}
-
-	@Override
-	public boolean shouldEnd(String line) {
-		return false;
-	}
+	
 
 	@Override
 	public boolean isEnded() {
@@ -54,5 +50,16 @@ public class ListenFrom implements SequenceLineListener{
 	@Override
 	public void end() {
 		listener.end();
+	}
+
+	@Override
+	public Optional<Matcher> shouldStart() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Optional<Matcher> shouldEnd() {
+		return Optional.empty();
 	}
 }

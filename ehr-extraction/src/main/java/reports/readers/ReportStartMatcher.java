@@ -67,8 +67,8 @@ import util.matcher.Matcher;
 */
 
 public class ReportStartMatcher {
-	private static final Supplier<Matcher> startMatcher=()->new ChainMatch.Builder()
-			.addPattern(Pattern.compile("^Plan/Rapport.*"))
+	public static final Supplier<Matcher> startMatcher=()->new ChainMatch.Builder()
+			.addPattern(Pattern.compile("^Plan/rapport.*"))
 			.addPattern(Pattern.compile("^Plankategori:.*"))
 			.addPattern(Pattern.compile("^Planområde:.*"))
 			.addPattern(Pattern.compile("^Tiltak:.*"))

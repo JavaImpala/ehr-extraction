@@ -5,43 +5,44 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.mutable.MutableObject;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 public class ChainMatch implements Matcher{
-	private final Consumer<String> lineListener;
+	private Consumer<String> lineListener=s->{};
 	
 	private MatchingState state=MatchingState.READY;
 	
 	private ChainMatch(List<Pattern> patterns) {
-		MutableObject<Consumer<String>> listener=new MutableObject<>();
 		
-		Consumer<String> next=null;
+		MutableInt i=new MutableInt(0);
 		
-		for(int i=patterns.size()-1;i>=0;i--) {
-			Pattern pattern=patterns.get(i);
+		
+		lineListener=s->{
 			
-			Consumer<String> nextInLine=next; //caches next
+			Pattern pattern=patterns.get(i.getValue());
 			
-			Consumer<String> stringConsumer=s->{
+			if(pattern.matcher(s).matches()) {
 				
-				if(pattern.matcher(s).matches()) {
-					if(nextInLine==null) {
-						state=MatchingState.MATCHED;
-					}else {
-						state=MatchingState.MATCHING;
-						
-						listener.setValue(nextInLine);
-					}
+				
+				if(i.getValue()>=patterns.size()-1) {
+					state=MatchingState.MATCHED;
+					lineListener=(o)->{};
 				}else {
-					state=MatchingState.UNMATCHED;
+					state=MatchingState.MATCHING;
+					
 				}
-			};
+			}else {
+				if(state!=MatchingState.READY) {
+					state=MatchingState.UNMATCHED;
+					lineListener=(o)->{};
+				}
+				
+			}
 			
-			next=stringConsumer;
-			listener.setValue(stringConsumer);
-		}
-		
-		lineListener=s->listener.getValue().accept(s);
+			if(state!=MatchingState.READY) {
+				i.increment();
+			}
+		};
 	}
 	
 	

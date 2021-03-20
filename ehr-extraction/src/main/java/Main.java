@@ -3,18 +3,15 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
-import reports.ProfileReportMaker;
-import util.PageHeaderIdentifier;
-import util.lineListeners.ObservableLineParser;
+import reports.ProfilCarePlanParser;
+import util.pageProcessor.PageParserManager;
 
 public class Main {
 	public static void main( String[] args )  
@@ -25,36 +22,24 @@ public class Main {
 		
 		
 		
-		Map<Predicate<String>,Supplier<ObservableLineParser>> elementMakers=new HashMap<>();
+		List<Supplier<PageParserManager>> pageParsers=new ArrayList<>();
+		
+		
 		
 		//lager reportMaker
 		
 		
-		elementMakers.put(
-				line->{
-					return ProfileReportMaker.initiateRegexPattern.matcher(line).matches();
-				}, 
-				()->ProfileReportMaker.create());
+		pageParsers.add(()->ProfilCarePlanParser.create());
 		
 		
 		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
 		
-		
 		int noteCounter=0;
 		
-		MutableObject<ObservableLineParser> activeMaker=new MutableObject<>();
+		MutableObject<Optional<PageParserManager>> currentManager=new MutableObject<>(Optional.empty());
 		
 		for(File fileEntry:folder.listFiles()) {
 			
-			if(activeMaker.getValue()!=null){
-				activeMaker.getValue().settle();
-				
-				System.out.println(activeMaker.getValue());
-				
-				noteCounter++;
-				
-				activeMaker.setValue(null);
-			}
 			
 			try {
 				String type=Files.probeContentType(fileEntry.toPath());
@@ -63,51 +48,41 @@ public class Main {
 					
 					try{
 						
+						FileReader reader=new FileReader(fileEntry);
 						
-						
-						BufferedReader br=new BufferedReader(new FileReader(fileEntry));
-						String line;
-						
-						Predicate<String> atEndOfHeader=s->PageHeaderIdentifier.lastHeaderLinePattern.matcher(s).matches();
-						boolean inHeader=true;
-						
-						while((line=br.readLine())  !=null) {
+						//tries to see if current parser can take this page as well
+						if(currentManager.getValue().isPresent()) {
+							boolean success=currentManager.getValue().get().getPageParser().tryToProccessPage(()->new BufferedReader(reader).lines().iterator());
 							
-							if(inHeader) {
-								if(atEndOfHeader.test(line)) {
-									inHeader=false;
-								}
-								
+							if(success) {
+								reader.close();
+								//if success, skip to next page
 								continue;
+							}else {
+								currentManager.setValue(Optional.empty());
 							}
 							
-							for(Entry<Predicate<String>,Supplier<ObservableLineParser>> entry:elementMakers.entrySet()) {
-								if(entry.getKey().test(line)) {
-									if(activeMaker.getValue()!=null) {
-										
-										activeMaker.getValue().settle();
-										
-										System.out.println(activeMaker.getValue());
-										
-										noteCounter++;
-									}
-									
-									ObservableLineParser newMaker = entry.getValue().get();
-									
-									newMaker.setHappyListener(()->{
-										activeMaker.setValue(null);
-									});
-									
-									activeMaker.setValue(newMaker);
-									
-									break;
-								}
-							}
+						}
+						
+						//if not sees if anybody else can
+						//loops through pageparsers if one accept, keep it
+						for(Supplier<PageParserManager> pageParser:pageParsers) {
 							
-							if(activeMaker.getValue()!=null) {
-								activeMaker.getValue().readLine(line);
-							}	
-						}	
+							PageParserManager instance=pageParser.get();
+							
+							
+							boolean success=instance.getPageParser().tryToProccessPage(()->new BufferedReader(reader).lines().iterator());
+							
+							if(success) {
+								System.out.println("initierer ny parser");
+								currentManager.setValue(Optional.of(instance));
+								break;
+							}
+						}
+						
+						reader.close();
+						
+						
 					}catch(Exception e) {
 						e.printStackTrace();
 					}
@@ -119,7 +94,6 @@ public class Main {
 			}
 		}
 		
-		System.out.println("ferdig å se gjennom. Fant "+noteCounter+" rapporter");
+		
     }  
-
 }

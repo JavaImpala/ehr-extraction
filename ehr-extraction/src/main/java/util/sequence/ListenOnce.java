@@ -1,12 +1,15 @@
 package util.sequence;
 
+import java.util.Optional;
+
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineListeners.LineParser;
+import util.matcher.Matcher;
 
 public class ListenOnce implements SequenceLineListener	{
 
-	private boolean shouldEnd=false;
+	private final Matcher matcher=null;
 	private EndableLineParser wrapped;
 	
 	private ListenOnce(EndableLineParser wrapped) {
@@ -28,17 +31,6 @@ public class ListenOnce implements SequenceLineListener	{
 	@Override
 	public void readLine(String line) {
 		wrapped.readLine(line);
-		shouldEnd=true;
-	}
-
-	@Override
-	public boolean shouldStart(String line) {
-		return false;
-	}
-
-	@Override
-	public boolean shouldEnd(String line) {
-		return shouldEnd;
 	}
 
 	@Override
@@ -49,5 +41,15 @@ public class ListenOnce implements SequenceLineListener	{
 	@Override
 	public void end() {
 		wrapped.end();
+	}
+
+	@Override
+	public Optional<Matcher> shouldStart() {
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<Matcher> shouldEnd() {
+		return Optional.of(matcher);
 	}
 }

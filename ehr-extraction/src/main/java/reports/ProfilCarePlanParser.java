@@ -1,24 +1,38 @@
 package reports;
 
 import java.util.function.Supplier;
-import java.util.regex.Pattern;
 
-import util.lineListeners.LineParser;
-import util.matcher.ChainMatch;
-import util.matcher.Matcher;
-import util.pageProcessor.PageParserManager;
+import reports.readers.FirstPageReportReader;
+import reports.readers.NormalReportLineParser;
 import util.pageProcessor.PageParser;
+import util.pageProcessor.PageParserManager;
 
 public class ProfilCarePlanParser implements PageParserManager{
 	
+	Supplier<PageParser> currentPageParserSupplier;
 	
-	private static final String startRegex="";
+	private ProfilCarePlanParser() {
+		currentPageParserSupplier=()->{
+			FirstPageReportReader firstParser= FirstPageReportReader.create();
+			
+			currentPageParserSupplier=()->NormalReportLineParser.create();
+			
+			return firstParser;
+		};
+		
+		
+	}
 	
-	
+	public static ProfilCarePlanParser create() {
+		return new ProfilCarePlanParser();
+	}	
 
 	@Override
 	public PageParser getPageParser() {
-		// TODO Auto-generated method stub
-		return null;
-	}	
+		return currentPageParserSupplier.get();
+	}
+
+
+
+	
 }
