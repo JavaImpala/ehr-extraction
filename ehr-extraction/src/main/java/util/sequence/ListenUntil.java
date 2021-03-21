@@ -6,8 +6,9 @@ import util.lineListeners.ObservableLineParser;
 public class ListenUntil implements ObservableLineParser{
 	
 	
-	
-	
+	private ListenUntil() {
+		
+	}
 	
 	@Override
 	public void readLine(String line) {

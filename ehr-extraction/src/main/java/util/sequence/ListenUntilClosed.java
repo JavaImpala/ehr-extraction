@@ -1,11 +1,15 @@
 package util.sequence;
 
+import java.util.Optional;
+
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineListeners.LineParser;
+import util.matcher.MatchAfterReads;
+import util.matcher.Matcher;
 
 public class ListenUntilClosed implements SequenceLineListener{
-	private boolean shouldEnd=false;
+	private Optional<Matcher> shouldEnd=Optional.empty();
 	private EndableLineParser wrapped;
 	
 	private ListenUntilClosed(EndableLineParser wrapped) {
@@ -27,17 +31,7 @@ public class ListenUntilClosed implements SequenceLineListener{
 	@Override
 	public void readLine(String line) {
 		wrapped.readLine(line);
-		shouldEnd=true;
-	}
-
-	@Override
-	public boolean shouldStart(String line) {
-		return false;
-	}
-
-	@Override
-	public boolean shouldEnd(String line) {
-		return shouldEnd;
+		shouldEnd=Optional.of(MatchAfterReads.alwaysMatch());
 	}
 
 	@Override
@@ -49,4 +43,16 @@ public class ListenUntilClosed implements SequenceLineListener{
 	public void end() {
 		wrapped.end();
 	}
+
+	@Override
+	public Optional<Matcher> shouldStart() {
+		return Optional.empty();
+	}
+
+	@Override
+	public Optional<Matcher> shouldEnd() {
+		return this.shouldEnd;
+	}
+	
+	
 }

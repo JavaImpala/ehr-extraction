@@ -1,10 +1,10 @@
 package util.sequence;
 
 import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
+import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
+import util.matcher.ListenUntilMatched;
 import util.matcher.Matcher;
 
 public class ListenFrom implements SequenceLineListener{
@@ -24,14 +24,16 @@ public class ListenFrom implements SequenceLineListener{
 				shouldStart);
 	}
 	
-	public static SequenceLineListener listenFromAfterMatch(EndableLineParser listener,Matcher shouldStart) {
+	public static SequenceLineListener listenFromAfterMatch(EndableLineParser listener,Supplier<Matcher> shouldStart) {
+		Matcher matcher=shouldStart.get();
+		
 		return new ListenFrom(
 				new SequenceLineListeners
 					.Builder()
-					.addListener(ListenOnce.create())
+					.addListener(ListenUntilMatched.create(matcher))
 					.addListener(SimpleSequenceLineListener.create(listener))
 					.build(),
-				shouldStart);
+				shouldStart.get());
 	}
 
 
@@ -54,8 +56,7 @@ public class ListenFrom implements SequenceLineListener{
 
 	@Override
 	public Optional<Matcher> shouldStart() {
-		// TODO Auto-generated method stub
-		return null;
+		return Optional.empty();
 	}
 
 	@Override
