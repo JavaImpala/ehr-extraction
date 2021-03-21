@@ -24,7 +24,6 @@ public class Main {
 			
 			int noteCounter=0;
 		
-		
 			List<Supplier<PageParserManager>> pageParsers=new ArrayList<>();
 			
 			
