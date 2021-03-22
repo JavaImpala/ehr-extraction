@@ -1,9 +1,10 @@
 package reports.readers;
 
 import java.util.Iterator;
+import java.util.Optional;
 import java.util.function.Supplier;
 
-import util.matcher.ListenUntilMatched;
+import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 import util.pageProcessor.PageParser;
@@ -59,8 +60,6 @@ public class NormalReportLineParser implements PageParser{
 			validator.readLine(matchIterator.next());
 			
 			if(validator.getState()==MatchingState.MATCHED) {
-				
-				System.out.println("matched ??");
 				break;
 			}
 			
@@ -73,24 +72,39 @@ public class NormalReportLineParser implements PageParser{
 		//System.out.println("subsequent page har match");
 		//parse
 		
-		Iterator<String> readIterator=lines.get();
-		System.out.println("kommer hit?"+readIterator.hasNext());
+		System.out.println("===============");
+		System.out.println("===============");
+		System.out.println("===============");
 		
-		SequenceLineListeners reader=new SequenceLineListeners.Builder()
-			.addListener(ListenUntilMatched.create(ReportStartMatcher.startMatcher.get()))
-			.addListener(SimpleSequenceLineListener.create(l->{
-				System.out.println("leser=> "+l);
-			}))
-			.build();
-		
-		while(readIterator.hasNext()) {
+		if(validator.getState()==MatchingState.MATCHED) {
+			Iterator<String> readIterator=lines.get();
 			
-			String line =readIterator.next();
+			SequenceLineListeners reader=new SequenceLineListeners.Builder()
+				.addListener(ListenUntilMatchedOrUnmatched.create(ReportStartMatcher.startMatcher.get()))
+				.addListener(
+					SimpleSequenceLineListener.create(
+						l->{
+							System.out.println("*************=leser=> "+l);
+						},
+						()->Optional.empty(),
+						()->Optional.of(ReportEndMatcher.endMatcher.get())
+						))
+				.build();
 			
-			
-			System.out.println("leser linje "+line);
-			reader.readLine(line);
+			while(readIterator.hasNext()) {
+				
+				String line =readIterator.next();
+				
+				if(!reader.isEnded()) {
+					reader.readLine(line);
+				}else {
+					System.out.println("reader is ended!");
+					return false;
+				}
+				
+			}
 		}
+		
 		
 		
 		return true;

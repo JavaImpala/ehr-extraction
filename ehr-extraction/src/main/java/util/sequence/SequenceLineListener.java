@@ -6,7 +6,7 @@ import util.endable.EndableLineParser;
 import util.matcher.Matcher;
 
 public interface SequenceLineListener extends EndableLineParser{
-	public Optional<Matcher> shouldStart();
-	public Optional<Matcher> shouldEnd();
+	public Optional<Matcher> getNewShouldStart();
+	public Optional<Matcher> getNewShouldEnd();
 	
 }

@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
-import util.matcher.ListenUntilMatched;
+import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 
 public class ListenFrom implements SequenceLineListener{
@@ -30,8 +30,8 @@ public class ListenFrom implements SequenceLineListener{
 		return new ListenFrom(
 				new SequenceLineListeners
 					.Builder()
-					.addListener(ListenUntilMatched.create(matcher))
-					.addListener(SimpleSequenceLineListener.create(listener))
+					.addListener(ListenUntilMatchedOrUnmatched.create(matcher))
+					.addListener(SimpleSequenceLineListener.create(listener,()->Optional.empty(),()->Optional.empty()))
 					.build(),
 				shouldStart.get());
 	}
@@ -55,12 +55,12 @@ public class ListenFrom implements SequenceLineListener{
 	}
 
 	@Override
-	public Optional<Matcher> shouldStart() {
+	public Optional<Matcher> getNewShouldStart() {
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<Matcher> shouldEnd() {
+	public Optional<Matcher> getNewShouldEnd() {
 		return Optional.empty();
 	}
 }

@@ -12,35 +12,36 @@ public class ChainMatch implements Matcher{
 	
 	private MatchingState state=MatchingState.READY;
 	
-	private ChainMatch(List<Pattern> patterns) {
+	private ChainMatch(List<Matcher> patterns) {
 		
 		MutableInt i=new MutableInt(0);
 		
 		
 		lineListener=s->{
 			
-			Pattern pattern=patterns.get(i.getValue());
 			
-			if(pattern.matcher(s).matches()) {
+			
+			Matcher matcher=patterns.get(i.getValue());
+			
+			matcher.readLine(s);
+			
+			System.out.println(matcher.getState()+" "+s);
+			
+			//System.out.println(s+" "+pattern.hashCode()+" "+i.getValue()+" "+pattern.getState());
+			
+			if(matcher.getState()==MatchingState.MATCHED) {
+				i.increment();
 				
-				
-				if(i.getValue()>=patterns.size()-1) {
+				if(i.getValue()>=patterns.size()) {
 					state=MatchingState.MATCHED;
 					lineListener=(o)->{};
-				}else {
-					state=MatchingState.MATCHING;
-					
-				}
-			}else {
-				if(state!=MatchingState.READY) {
-					state=MatchingState.UNMATCHED;
-					lineListener=(o)->{};
 				}
 				
-			}
-			
-			if(state!=MatchingState.READY) {
-				i.increment();
+			}else if(matcher.getState()==MatchingState.UNMATCHED){
+				state=MatchingState.UNMATCHED;
+				lineListener=(o)->{};
+			}else {
+				state=MatchingState.MATCHING;
 			}
 		};
 	}
@@ -56,19 +57,33 @@ public class ChainMatch implements Matcher{
 	}
 	
 	public static class Builder{
-		private final List<Pattern> patterns=new ArrayList<>();
+		private final List<Matcher> patterns=new ArrayList<>();
 		
 		public Builder() {
 			
 		}
 		
-		public Builder addPattern(Pattern pattern) {
-			this.patterns.add(pattern);return this;
+		public Builder addSingleLinePattern(Pattern pattern) {
+			this.patterns.add(SingleLineMatcher.wrapPattern(pattern));return this;
+		}
+		public Builder addMatcher(Matcher matcher) {
+			this.patterns.add(matcher);return this;
 		}
 		
 		public ChainMatch build() {
 			return new ChainMatch(this.patterns);
 		}
+
+		
 	}
+
+	@Override
+	public String toString() {
+		return "ChainMatch [state=" + state + ", hashCode()=" + hashCode() + "]";
+	}
+
+	
+	
+	
 	
 }

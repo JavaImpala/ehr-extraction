@@ -45,12 +45,12 @@ public class ListenUntilClosed implements SequenceLineListener{
 	}
 
 	@Override
-	public Optional<Matcher> shouldStart() {
+	public Optional<Matcher> getNewShouldStart() {
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<Matcher> shouldEnd() {
+	public Optional<Matcher> getNewShouldEnd() {
 		return this.shouldEnd;
 	}
 	

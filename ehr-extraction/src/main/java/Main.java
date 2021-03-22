@@ -8,13 +8,20 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.mutable.MutableObject;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import reports.ProfilCarePlanParser;
 import util.pageProcessor.PageParserManager;
 
 public class Main {
+	
+	private final static Logger log=LogManager.getLogger(Main.class.getSimpleName());
+	
 	public static void main(String[] args ){  
 		
 		String location="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full";
@@ -27,11 +34,25 @@ public class Main {
 		//lager reportMaker
 		MutableObject<Optional<PageParserManager>> currentManager=new MutableObject<>(Optional.empty());	
 		
+		MutableInt counter=new MutableInt();
+		
 		new PageLineSupplier(
 				location,
 				pageLineIteratorSupplier->{
+					
+					if(counter.getValue()>1000) {
+						return;
+					}
+					
+					counter.increment();
+					
+					log.info("");
+					log.info("mottar side");
+					
+					System.out.println("ny side");
+					
 					if(currentManager.getValue().isPresent()) {
-						//Iterator<String> 
+						log.info("leser side i current pageSupplier "+currentManager.getValue().get().getClass());
 						
 						boolean success=currentManager
 								.getValue()
@@ -40,10 +61,11 @@ public class Main {
 								.tryToProccessPage(pageLineIteratorSupplier);
 						
 						if(success) {
-							
+							log.info("klarte det, går til neste");
 							//if success, skip to next page
 							return;
 						}else {
+							log.info("klarte det ikke");
 							currentManager.setValue(Optional.empty());
 						}
 						
@@ -52,20 +74,24 @@ public class Main {
 					//if not sees if anybody else can
 					//loops through pageparsers if one accept, keep it
 					for(Supplier<PageParserManager> pageParser:pageParsers) {
-						
 						PageParserManager instance=pageParser.get();
 						
+						log.info("forsøker å lese side med med ny pageparsermanager "+instance.getClass());
 						
 						boolean success=instance
 								.getPageParser()
 								.tryToProccessPage(pageLineIteratorSupplier);
 						
 						if(success) {
-							System.out.println("initierer ny parser");
+							log.info("klarer det!");
 							currentManager.setValue(Optional.of(instance));
-							break;
+							return;
+						}else {
+							log.info("klarer det ikke");
 						}
 					}
+					
+					log.info("klarte ikke å lese side");
 				});
     }  
 	
@@ -77,40 +103,17 @@ public class Main {
 			try {
 				File folder=new File(location);
 				
-				//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
-				
-				MutableObject<IORunnable> closeCurrentResource=new MutableObject<>(()->{});
-				
 				for(File fileEntry:folder.listFiles()) {
 					
 					String type=Files.probeContentType(fileEntry.toPath());
 					
 					if(type.equals("text/plain")) {
-						
-							
 						FileReader reader=new FileReader(fileEntry);
+						List<String> lines=new BufferedReader(reader).lines().collect(Collectors.toList());
+						reader.close();
 						
-						
-						Supplier<Iterator<String>> getLines=()->{
-							try {
-								
-								closeCurrentResource.getValue().run();
-								
-								
-								BufferedReader br=new BufferedReader(reader);
-								
-								closeCurrentResource.setValue(()->br.close());
-								
-								Iterator<String> iterator=br.lines().iterator();
-								
-								return iterator;
-							
-							} catch (Exception e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
-							}
-							
-							return new ArrayList<String>().iterator();
+						Supplier<Iterator<String>> getLines=()->{	
+							return lines.iterator();	
 						};
 						
 						listener.accept(getLines);
@@ -119,16 +122,8 @@ public class Main {
 					}
 				}
 			}catch(Exception e) {
-				
+				e.printStackTrace();
 			}
 		}
-	}
-	
-	private interface IOSupplier<E> {
-		public E get() throws Exception;
-	}
-	
-	private interface IORunnable {
-		public void run() throws Exception;
 	}
 }

@@ -1,10 +1,11 @@
 package util.matcher;
 
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 import util.sequence.SequenceLineListener;
 
-public class ListenUntilMatched implements SequenceLineListener{
+public class ListenUntilMatchedOrUnmatched implements SequenceLineListener{
 	
 
 	private final Matcher matcher;
@@ -12,12 +13,16 @@ public class ListenUntilMatched implements SequenceLineListener{
 	private Optional<Matcher> endMatcher=Optional.empty();
 	private boolean ended=false;
 	
-	private ListenUntilMatched(Matcher matcher) {
+	private ListenUntilMatchedOrUnmatched(Matcher matcher) {
 		this.matcher=matcher;
 	}
 	
-	public static ListenUntilMatched create(Matcher matcher) {
-		return new ListenUntilMatched(matcher);
+	public static ListenUntilMatchedOrUnmatched create(Matcher matcher) {
+		return new ListenUntilMatchedOrUnmatched(matcher);
+	}
+	
+	public static Matcher create(Pattern pattern) {
+		return SingleLineMatcher.wrapPattern(pattern);
 	}
 	
 	@Override
@@ -26,6 +31,7 @@ public class ListenUntilMatched implements SequenceLineListener{
 		
 		if(matcher.getState()==MatchingState.MATCHED || matcher.getState()==MatchingState.UNMATCHED) {
 			ended=true;
+			
 			endMatcher=Optional.of(MatchAfterReads.alwaysMatch());
 		}
 	}
@@ -41,13 +47,15 @@ public class ListenUntilMatched implements SequenceLineListener{
 	}
 
 	@Override
-	public Optional<Matcher> shouldStart() {
+	public Optional<Matcher> getNewShouldStart() {
 		return Optional.empty();
 	}
 
 	@Override
-	public Optional<Matcher> shouldEnd() {
+	public Optional<Matcher> getNewShouldEnd() {
 		return endMatcher;
 	}
+
+	
 	
 }

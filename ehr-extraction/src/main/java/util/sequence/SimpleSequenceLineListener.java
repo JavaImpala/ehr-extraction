@@ -1,6 +1,7 @@
 package util.sequence;
 
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
@@ -9,25 +10,27 @@ import util.matcher.Matcher;
 
 public class SimpleSequenceLineListener implements SequenceLineListener{
 	private final EndableLineParser listener;
+	private final Supplier<Optional<Matcher>> startMatcher;
+	private final Supplier<Optional<Matcher>> endMatcher;
 	
-	private SimpleSequenceLineListener(EndableLineParser listener) {
+	private SimpleSequenceLineListener(EndableLineParser listener,Supplier<Optional<Matcher>> startMatcher,Supplier<Optional<Matcher>> endMatcher) {
 		this.listener=listener;
+		this.startMatcher=startMatcher;
+		this.endMatcher=endMatcher;
 	}
 	
-	public static SimpleSequenceLineListener create(EndableLineParser listener) {
-		return new SimpleSequenceLineListener(listener);
+	public static SimpleSequenceLineListener create(EndableLineParser listener,Supplier<Optional<Matcher>> startMatcher,Supplier<Optional<Matcher>> endMatcher) {
+		return new SimpleSequenceLineListener(listener, startMatcher, endMatcher);
 	}
 	
-	public static SimpleSequenceLineListener create(LineParser listener) {
-		return new SimpleSequenceLineListener(EndableWrapper.wrap(listener));
+	public static SimpleSequenceLineListener create(LineParser listener,Supplier<Optional<Matcher>> startMatcher,Supplier<Optional<Matcher>> endMatcher) {
+		return new SimpleSequenceLineListener(EndableWrapper.wrap(listener), startMatcher, endMatcher);
 	}
 	
 	@Override
 	public void readLine(String line) {
 		this.listener.readLine(line);
 	}
-
-	
 
 	@Override
 	public void end() {
@@ -40,13 +43,13 @@ public class SimpleSequenceLineListener implements SequenceLineListener{
 	}
 
 	@Override
-	public Optional<Matcher> shouldStart() {
-		return Optional.empty();
+	public Optional<Matcher> getNewShouldStart() {
+		return this.startMatcher.get();
 	}
 
 	@Override
-	public Optional<Matcher> shouldEnd() {
-		return Optional.empty();
+	public Optional<Matcher> getNewShouldEnd() {
+		return this.endMatcher.get();
 	}
 	
 	
