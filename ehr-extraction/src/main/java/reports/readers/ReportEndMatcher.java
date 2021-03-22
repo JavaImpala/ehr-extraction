@@ -19,7 +19,6 @@ import util.matcher.Matcher;
 	4 Skrevet av: Torbjørn Torsvik Utført tidspunkt: 25.03.2020 Klokkeslett: 09:00
 	5 Skrevet av: Torbjørn Torsvik Utført tidspunkt: 06.03.2020 Klokkeslett:
 	6 Skrevet av: Torbjørn Torsvik Utført tidspunkt: 09.02.2020 Klokkeslett:
- *
  */
 
 public class ReportEndMatcher {
