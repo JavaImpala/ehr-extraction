@@ -1,6 +1,6 @@
 package util.endable;
 
-import util.lineListeners.LineParser;
+import util.lineParser.LineParser;
 
 public class EndableWrapper implements EndableLineParser{
 	

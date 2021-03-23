@@ -1,6 +1,6 @@
 package util.endable;
 
-import util.lineListeners.LineParser;
+import util.lineParser.LineParser;
 
 public interface EndableLineParser extends LineParser,Endable{
 

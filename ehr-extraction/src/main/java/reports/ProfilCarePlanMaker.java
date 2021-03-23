@@ -16,8 +16,8 @@ public class ProfilCarePlanMaker implements EndableLineParser{
 	
 	
 	
-	private ProfilCarePlanMaker() {
-		plan=new CarePlan();
+	private ProfilCarePlanMaker(CarePlan plan) {
+		plan=plan;
 		
 		this.parser=new SequenceLineParsers.Builder()
 				.addListener(SimpleSequenceLineParser.listenOnce(EndableWrapper.wrap(l->{
@@ -55,20 +55,15 @@ public class ProfilCarePlanMaker implements EndableLineParser{
 				.build();
 	}
 	
-	public static ProfilCarePlanMaker create() {
-		return new ProfilCarePlanMaker();
+	public static ProfilCarePlanMaker create(CarePlan plan) {
+		return new ProfilCarePlanMaker(plan);
 	}
 	
 
 	
 	@Override
 	public void readLine(String line) {
-		
 		this.parser.readLine(line);
-		
-		if(this.parser.isEnded()) {
-			System.out.println("finished!");
-		}
 	}
 
 	@Override

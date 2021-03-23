@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
-import util.lineListeners.LineParser;
+import util.lineParser.LineParser;
 import util.matcher.MatchAfterReadsSupplier;
 import util.matcher.Matcher;
 

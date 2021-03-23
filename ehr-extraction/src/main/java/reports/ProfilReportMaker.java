@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import util.RegexTools;
-import util.lineListeners.LineListenerState;
-import util.lineListeners.ObservableLineParser;
+import util.lineParser.LineListenerState;
+import util.lineParser.ObservableLineParser;
 
 public class ProfilReportMaker implements ObservableLineParser{
 	private final ProfilReport report;

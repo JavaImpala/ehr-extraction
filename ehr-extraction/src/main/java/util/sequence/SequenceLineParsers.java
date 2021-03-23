@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 
 import util.endable.EndableLineParser;
-import util.lineListeners.LineParser;
+import util.lineParser.LineParser;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 
@@ -40,14 +40,12 @@ public class SequenceLineParsers implements EndableLineParser{
 					return new LineEater(
 							makers.get(currentIndex.getValue()+1).getNewShouldStart(),//should next start
 							makers.get(currentIndex.getValue()).getNewShouldEnd(),
-							food,
 							makers.get(currentIndex.getValue()));
 				}else if(currentIndex.getValue()<makers.size()) {
 					
 					return new LineEater(
 							Optional.empty(),//no next
 							makers.get(currentIndex.getValue()).getNewShouldEnd(),
-							food,
 							makers.get(currentIndex.getValue()));
 				}else {
 					throw new IllegalArgumentException("vi er ended"); 
@@ -168,19 +166,16 @@ public class SequenceLineParsers implements EndableLineParser{
 		
 		private LineEaterState state=LineEaterState.EATING;	
 		
-		private final String toBeEaten;
 		private final LineParser eater;
 		
 		private LineEater(
 				Optional<Matcher> start,
 				Optional<Matcher> end,
-				String toBeEaten,
 				LineParser eater) {
 			
 			this.start=start;
 			this.end=end;
 			
-			this.toBeEaten=toBeEaten;
 			this.eater=eater;
 		}
 		

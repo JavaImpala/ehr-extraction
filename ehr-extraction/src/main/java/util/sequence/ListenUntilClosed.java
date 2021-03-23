@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
-import util.lineListeners.LineParser;
+import util.lineParser.LineParser;
 import util.matcher.UnmatchUntilEnoughReads;
 import util.matcher.Matcher;
 

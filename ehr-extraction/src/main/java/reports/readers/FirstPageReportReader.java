@@ -22,14 +22,14 @@ import util.sequence.SimpleSequenceLineParser;
 public class FirstPageReportReader implements PageParser{
 	private final static Logger log=LogManager.getLogger(FirstPageReportReader.class.getSimpleName());
 	
-	public static FirstPageReportReader create() {
-		return new FirstPageReportReader();
-	}
-
 	private Optional<ProfilReportMaker> currentReport;
 
 	private FirstPageReportReader() {
 		
+	}
+	
+	public static FirstPageReportReader create() {
+		return new FirstPageReportReader();
 	}
 
 	@Override
