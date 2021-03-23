@@ -95,7 +95,6 @@ public class FirstPageReportReader implements PageParser{
 					log.info("reader is ended!");
 					return false;
 				}
-				
 			}
 		}
 		
