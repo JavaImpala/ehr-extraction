@@ -31,8 +31,4 @@ public class ProfilCarePlanParser implements PageParserManager{
 	public PageParser getPageParser() {
 		return currentPageParserSupplier.get();
 	}
-
-
-
-	
 }

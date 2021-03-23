@@ -8,7 +8,7 @@ import util.lineListeners.LineParser;
 import util.matcher.MatchAfterReads;
 import util.matcher.Matcher;
 
-public class ListenUntilClosed implements SequenceLineListener{
+public class ListenUntilClosed implements SequenceLineParser{
 	private Optional<Matcher> shouldEnd=Optional.empty();
 	private EndableLineParser wrapped;
 	
@@ -20,11 +20,11 @@ public class ListenUntilClosed implements SequenceLineListener{
 		return new ListenUntilClosed(wrapped);
 	}
 	
-	public static SequenceLineListener wrap(LineParser wrapped) {
+	public static SequenceLineParser wrap(LineParser wrapped) {
 		return new ListenUntilClosed(EndableWrapper.wrap(wrapped));
 	}
 	
-	public static SequenceLineListener create() {
+	public static SequenceLineParser create() {
 		return new ListenUntilClosed(EndableWrapper.wrap(s->{}));
 	}
 	

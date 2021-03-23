@@ -6,16 +6,20 @@ import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 import util.endable.EndableLineParser;
 import util.lineListeners.LineParser;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 
-public class SequenceLineListeners implements EndableLineParser{
+public class SequenceLineParsers implements EndableLineParser{
+	private final static Logger log=LogManager.getLogger(SequenceLineParser.class.getSimpleName());
+	
 	private final EndableLineParser lineListener;
 	
-	private SequenceLineListeners(List<SequenceLineListener> makers) {
+	private SequenceLineParsers(List<SequenceLineParser> makers) {
 		
 		//MutableObject<String> prevLine=new MutableObject<>("");
 		MutableInt currentIndex=new MutableInt(0);
@@ -28,7 +32,7 @@ public class SequenceLineListeners implements EndableLineParser{
 			private LineEater currentEater;
 			
 			private LineEater getEater(String food) {
-				System.out.println("lager ny eater basert på index "+currentIndex.getValue()+" "+makers.size());
+				log.info("lager ny eater basert på index "+currentIndex.getValue()+" "+makers.size());
 				
 				if(currentIndex.getValue()<makers.size()-1) {
 					
@@ -54,19 +58,26 @@ public class SequenceLineListeners implements EndableLineParser{
 			@Override
 			public void readLine(String s) {
 				undigested.add(s);
-				consumeFood(0);
+				
+				log.info("consuming after eatLine "+undigested.size());
+				
+				if(currentEater==null) {
+					consumeFood(0);
+				}else {
+					consumeFood(undigested.size()-1);
+				}
+				
 			}
 			
 			private void consumeFood(int head) {
 				
 				
 				if(head>=undigested.size()) {
+					log.info("returned fordi vi ikke har nok");
 					return;
 				}
 				
 				String s=undigested.get(head);
-				
-				
 				
 				if(currentEater==null) {
 					if(head!=0) {
@@ -76,14 +87,12 @@ public class SequenceLineListeners implements EndableLineParser{
 					currentEater=getEater(s);
 				}
 				
-				
-				
 				currentEater.digest(s);
 				
-				System.out.println("forsøker å spise "+s+" "+currentEater.end+" "+currentEater.start);
+				log.info("forsøker å spise "+s+" "+head+" "+currentEater.end+" "+currentEater.start+" "+currentEater.state);
 				
 				if(currentEater.state==LineEaterState.EATEN) {
-					System.out.println("===================>SPISER "+s);
+					log.info("===================>SPISER "+s);
 					
 					currentEater.eater.readLine(undigested.removeFirst());
 					currentEater=null;
@@ -92,7 +101,7 @@ public class SequenceLineListeners implements EndableLineParser{
 					consumeFood(head+1);
 				}else if(currentEater.state==LineEaterState.GOTONEXT) {
 					
-					System.out.println("VI GÅR TIL NESTE!============="+undigested.get(0));
+					log.info("VI GÅR TIL NESTE!============="+undigested.get(0));
 					
 					currentIndex.increment();
 					currentEater=null;
@@ -136,18 +145,18 @@ public class SequenceLineListeners implements EndableLineParser{
 	}
 	
 	public static class Builder{
-		private final List<SequenceLineListener> makers=new ArrayList<>();
+		private final List<SequenceLineParser> makers=new ArrayList<>();
 		
 		public Builder() {
 			
 		}
 		
-		public Builder addListener(SequenceLineListener maker) {
+		public Builder addListener(SequenceLineParser maker) {
 			this.makers.add(maker);return this;
 		}
 		
-		public SequenceLineListeners build() {
-			return new SequenceLineListeners(this.makers);
+		public SequenceLineParsers build() {
+			return new SequenceLineParsers(this.makers);
 		}
 	}
 	
@@ -187,7 +196,6 @@ public class SequenceLineListeners implements EndableLineParser{
 				if(end.get().getState()==MatchingState.MATCHED) {
 					state=LineEaterState.GOTONEXT;
 				}else if(end.get().getState()==MatchingState.UNMATCHED) {
-					System.out.println("end er unmatched");
 					end=Optional.empty();
 				}
 			}
@@ -205,10 +213,7 @@ public class SequenceLineListeners implements EndableLineParser{
 		}
 		
 		private LineEaterState digest(String line) {
-			end.ifPresent(m->{
-				System.out.println("end spiser line "+m+" "+line+" "+m);
-				m.readLine(line);
-			});
+			end.ifPresent(m->{m.readLine(line);});
 			start.ifPresent(m->m.readLine(line));
 			
 			updateState();

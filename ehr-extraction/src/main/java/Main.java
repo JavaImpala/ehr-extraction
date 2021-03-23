@@ -24,6 +24,8 @@ public class Main {
 	
 	public static void main(String[] args ){  
 		
+		log.info("starting application");
+		
 		String location="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full";
 		
 		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy

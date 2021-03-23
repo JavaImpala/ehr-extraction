@@ -3,9 +3,9 @@ package util.matcher;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
-import util.sequence.SequenceLineListener;
+import util.sequence.SequenceLineParser;
 
-public class ListenUntilMatchedOrUnmatched implements SequenceLineListener{
+public class ListenUntilMatchedOrUnmatched implements SequenceLineParser{
 	
 
 	private final Matcher matcher;

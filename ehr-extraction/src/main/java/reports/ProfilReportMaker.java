@@ -9,7 +9,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import util.lineListeners.LineListenerState;
 import util.lineListeners.ObservableLineParser;
 
-public class ProfileReportMaker implements ObservableLineParser{
+public class ProfilReportMaker implements ObservableLineParser{
 	private final ProfilReport report;
 	
 	private LineListenerState state=LineListenerState.READY;
@@ -20,7 +20,7 @@ public class ProfileReportMaker implements ObservableLineParser{
 	
 	private final Consumer<String> lineReaders;
 	
-	private ProfileReportMaker() {
+	private ProfilReportMaker() {
 		
 		report=new ProfilReport();
 		
@@ -86,8 +86,8 @@ public class ProfileReportMaker implements ObservableLineParser{
         return  m.find() ? m.group(1): null;
     }
 	
-	public static  ProfileReportMaker create() {
-		return new  ProfileReportMaker();
+	public static  ProfilReportMaker create() {
+		return new  ProfilReportMaker();
 	}
 	
 	@Override

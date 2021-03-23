@@ -1,6 +1,11 @@
 package util;
 
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
+import util.matcher.ChainMatch;
+import util.matcher.Matcher;
+import util.matcher.MatchingUntil;
 
 /**
  * prosseserer sider i profil pdf. Luker ut header og sender resten til sub makers. 
@@ -17,5 +22,9 @@ import java.util.regex.Pattern;
 public class PageHeaderIdentifier{
 	private static final String lastHeaderLine="^Fødselsdato.*Persnr:.*((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4}).*/.*[0-9]{5}.*";
 	public static final Pattern lastHeaderLinePattern=Pattern.compile(lastHeaderLine);
+	
+	public static final Supplier<Matcher> matcher=()->new ChainMatch.Builder()
+			.addMatcher(MatchingUntil.create(lastHeaderLinePattern))
+			.build();
 	
 }

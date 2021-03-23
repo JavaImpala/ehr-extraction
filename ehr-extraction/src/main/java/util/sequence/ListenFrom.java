@@ -7,7 +7,7 @@ import util.endable.EndableLineParser;
 import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 
-public class ListenFrom implements SequenceLineListener{
+public class ListenFrom implements SequenceLineParser{
 	
 	
 	private final EndableLineParser listener;
@@ -18,20 +18,20 @@ public class ListenFrom implements SequenceLineListener{
 		this.shouldStart=shouldStart;
 	}
 	
-	public static SequenceLineListener listenFrom(EndableLineParser listener,Matcher shouldStart) {
+	public static SequenceLineParser listenFrom(EndableLineParser listener,Matcher shouldStart) {
 		return new ListenFrom(
 				listener,
 				shouldStart);
 	}
 	
-	public static SequenceLineListener listenFromAfterMatch(EndableLineParser listener,Supplier<Matcher> shouldStart) {
+	public static SequenceLineParser listenFromAfterMatch(EndableLineParser listener,Supplier<Matcher> shouldStart) {
 		Matcher matcher=shouldStart.get();
 		
 		return new ListenFrom(
-				new SequenceLineListeners
+				new SequenceLineParsers
 					.Builder()
 					.addListener(ListenUntilMatchedOrUnmatched.create(matcher))
-					.addListener(SimpleSequenceLineListener.create(listener,()->Optional.empty(),()->Optional.empty()))
+					.addListener(SimpleSequenceLineParser.create(listener,()->Optional.empty(),()->Optional.empty()))
 					.build(),
 				shouldStart.get());
 	}

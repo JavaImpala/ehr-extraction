@@ -4,12 +4,16 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
+import util.matcher.ChainMatch;
 import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 import util.pageProcessor.PageParser;
-import util.sequence.SequenceLineListeners;
-import util.sequence.SimpleSequenceLineListener;
+import util.sequence.SequenceLineParsers;
+import util.sequence.SimpleSequenceLineParser;
 
 		/*
 		 * 
@@ -38,12 +42,14 @@ import util.sequence.SimpleSequenceLineListener;
 		 */
 
 public class NormalReportLineParser implements PageParser{
+	private final static Logger log=LogManager.getLogger(NormalReportLineParser.class.getSimpleName());
+	
 	public static  NormalReportLineParser create() {
 		return new  NormalReportLineParser();
 	}
 
 	private NormalReportLineParser() {
-		
+		log.info("is created!");
 	}
 
 	@Override
@@ -64,27 +70,23 @@ public class NormalReportLineParser implements PageParser{
 			}
 			
 			if(validator.getState()==MatchingState.UNMATCHED) {
-				//System.out.println("subsequent page har IKKE match");
+				log.info("is UNvalidated");
 				return false;
 			}
 		}
-		
+		log.info("is validated");
 		//System.out.println("subsequent page har match");
 		//parse
-		
-		System.out.println("===============");
-		System.out.println("===============");
-		System.out.println("===============");
 		
 		if(validator.getState()==MatchingState.MATCHED) {
 			Iterator<String> readIterator=lines.get();
 			
-			SequenceLineListeners reader=new SequenceLineListeners.Builder()
+			SequenceLineParsers reader=new SequenceLineParsers.Builder()
 				.addListener(ListenUntilMatchedOrUnmatched.create(ReportStartMatcher.startMatcher.get()))
 				.addListener(
-					SimpleSequenceLineListener.create(
+					SimpleSequenceLineParser.create(
 						l->{
-							System.out.println("*************=leser=> "+l);
+							//System.out.println("*************=leser=> "+l);
 						},
 						()->Optional.empty(),
 						()->Optional.of(ReportEndMatcher.endMatcher.get())
@@ -96,16 +98,17 @@ public class NormalReportLineParser implements PageParser{
 				String line =readIterator.next();
 				
 				if(!reader.isEnded()) {
+					log.info("reads line "+line);
 					reader.readLine(line);
 				}else {
-					System.out.println("reader is ended!");
+					log.info("reader is ended!");
 					return false;
 				}
 				
 			}
 		}
 		
-		
+		log.info("has read page successfully");
 		
 		return true;
 	}

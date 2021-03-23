@@ -6,8 +6,12 @@ import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
 
 public class ChainMatch implements Matcher{
+	private final static Logger log=LogManager.getLogger(ChainMatch.class.getSimpleName());
+	
 	private Consumer<String> lineListener=s->{};
 	
 	private MatchingState state=MatchingState.READY;
@@ -25,7 +29,7 @@ public class ChainMatch implements Matcher{
 			
 			matcher.readLine(s);
 			
-			System.out.println(matcher.getState()+" "+s);
+			log.info("on index:"+i.getValue()+" of:"+(patterns.size()-1)+" "+s+" "+matcher);
 			
 			//System.out.println(s+" "+pattern.hashCode()+" "+i.getValue()+" "+pattern.getState());
 			
@@ -33,8 +37,11 @@ public class ChainMatch implements Matcher{
 				i.increment();
 				
 				if(i.getValue()>=patterns.size()) {
+					
 					state=MatchingState.MATCHED;
 					lineListener=(o)->{};
+				}else {
+					state=MatchingState.MATCHING;
 				}
 				
 			}else if(matcher.getState()==MatchingState.UNMATCHED){
