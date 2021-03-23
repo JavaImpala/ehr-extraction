@@ -3,7 +3,7 @@ package util.sequence;
 import java.util.Optional;
 
 import util.endable.EndableLineParser;
-import util.matcher.MatchAfterReads;
+import util.matcher.UnmatchUntilEnoughReads;
 import util.matcher.Matcher;
 
 public class EndableToSequenceLineParser implements SequenceLineParser{
@@ -46,7 +46,7 @@ public class EndableToSequenceLineParser implements SequenceLineParser{
 	@Override
 	public Optional<Matcher> getNewShouldEnd() {
 		if(wrapped.isEnded()) {
-			return Optional.of(MatchAfterReads.alwaysMatch());
+			return Optional.of(UnmatchUntilEnoughReads.alwaysMatch());
 		}
 		
 		return Optional.empty();

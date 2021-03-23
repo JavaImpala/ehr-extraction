@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineListeners.LineParser;
-import util.matcher.MatchAfterReads;
+import util.matcher.MatchAfterReadsSupplier;
 import util.matcher.Matcher;
 
 public class SimpleSequenceLineParser implements SequenceLineParser{
@@ -30,9 +30,9 @@ public class SimpleSequenceLineParser implements SequenceLineParser{
 	
 	public static SimpleSequenceLineParser listenOnce(EndableLineParser listener) {
 		
-		Matcher matchAfterReads=MatchAfterReads.create(1);
+		MatchAfterReadsSupplier matchAfterReads=MatchAfterReadsSupplier.create(1);
 		
-		return new SimpleSequenceLineParser(listener,()->Optional.empty(),()->Optional.of(matchAfterReads));
+		return new SimpleSequenceLineParser(listener,()->Optional.empty(),()->Optional.of(matchAfterReads.get()));
 	}
 	
 	@Override

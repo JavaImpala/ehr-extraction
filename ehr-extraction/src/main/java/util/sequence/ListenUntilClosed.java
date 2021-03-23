@@ -5,7 +5,7 @@ import java.util.Optional;
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineListeners.LineParser;
-import util.matcher.MatchAfterReads;
+import util.matcher.UnmatchUntilEnoughReads;
 import util.matcher.Matcher;
 
 public class ListenUntilClosed implements SequenceLineParser{
@@ -31,7 +31,7 @@ public class ListenUntilClosed implements SequenceLineParser{
 	@Override
 	public void readLine(String line) {
 		wrapped.readLine(line);
-		shouldEnd=Optional.of(MatchAfterReads.alwaysMatch());
+		shouldEnd=Optional.of(UnmatchUntilEnoughReads.alwaysMatch());
 	}
 
 	@Override

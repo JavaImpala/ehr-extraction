@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" monitorInterval="30">
+<Configuration>
     <Properties>
         <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
     </Properties>
  
     <Appenders>
-        <Console name="console" target="SYSTEM_OUT" follow="true">
+        <Console name="console">
             <PatternLayout pattern="${LOG_PATTERN}"/>
         </Console>
     </Appenders>
@@ -14,5 +14,8 @@
         <Root level="info">
             <AppenderRef ref="console"/>
         </Root>
+        <logger name="Main" additivity="false" level="off">
+	        <appender-ref ref="console" />
+	    </logger>
     </Loggers>
 </Configuration>

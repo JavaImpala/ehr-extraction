@@ -4,8 +4,9 @@ import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import util.matcher.ChainMatch;
 import util.matcher.ListenUntilMatchedOrUnmatched;

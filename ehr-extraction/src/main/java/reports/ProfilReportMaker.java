@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.mutable.MutableObject;
 
+import util.RegexTools;
 import util.lineListeners.LineListenerState;
 import util.lineListeners.ObservableLineParser;
 
@@ -41,12 +42,12 @@ public class ProfilReportMaker implements ObservableLineParser{
 		 */ 
 		
 		Consumer<String> secondLineReader=line->{
-			report.setDaytimeReportType(getValue(line,"Vakt:"));
+			report.setDaytimeReportType(RegexTools.getValueAfter(line,"Vakt:"));
 			
-			report.setChangedStatus((getValue(line,"Status:")=="Uendret")?false:true);
-			report.setChangedPlan((getValue(line,"Endre tiltak:")=="Nei")?false:true);
+			report.setChangedStatus((RegexTools.getValueAfter(line,"Status:")=="Uendret")?false:true);
+			report.setChangedPlan((RegexTools.getValueAfter(line,"Endre tiltak:")=="Nei")?false:true);
 			
-			report.setPriority((getValue(line,"Prioritet gitt:")=="Nei")?false:true);
+			report.setPriority((RegexTools.getValueAfter(line,"Prioritet gitt:")=="Nei")?false:true);
 			
 			reader.setValue(reportReader);
 		};
@@ -79,12 +80,7 @@ public class ProfilReportMaker implements ObservableLineParser{
 		
 	}
 	
-	public static String getValue(String testStr, String key){
-        Pattern p = Pattern.compile("(?<="+key+"\\s)(\\w+)");
-        Matcher m = p.matcher(testStr);
-       
-        return  m.find() ? m.group(1): null;
-    }
+	
 	
 	public static  ProfilReportMaker create() {
 		return new  ProfilReportMaker();

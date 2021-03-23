@@ -32,7 +32,7 @@ public class ListenUntilMatchedOrUnmatched implements SequenceLineParser{
 		if(matcher.getState()==MatchingState.MATCHED || matcher.getState()==MatchingState.UNMATCHED) {
 			ended=true;
 			
-			endMatcher=Optional.of(MatchAfterReads.alwaysMatch());
+			endMatcher=Optional.of(UnmatchUntilEnoughReads.alwaysMatch());
 		}
 	}
 
