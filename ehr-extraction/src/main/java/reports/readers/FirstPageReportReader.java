@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+import reports.CarePlan;
 import reports.ProfilCarePlanMaker;
 import reports.ProfilReportMaker;
 import util.PageHeaderIdentifier;
@@ -65,13 +65,15 @@ public class FirstPageReportReader implements PageParser{
 		
 		System.out.println("first page har match "+validator.getState());
 		
+		CarePlan carePlan=new CarePlan();
+		
 		//parse
 		if(validator.getState()==MatchingState.MATCHED) {
 			Iterator<String> readIterator=lines.get();
 			
 			SequenceLineParsers reader=new SequenceLineParsers.Builder()
 				.addListener(ListenUntilMatchedOrUnmatched.create(PageHeaderIdentifier.matcher.get()))
-				.addListener(EndableToSequenceLineParser.wrap(ProfilCarePlanMaker.create()))
+				.addListener(EndableToSequenceLineParser.wrap(ProfilCarePlanMaker.create(carePlan)))
 				.addListener(
 					SimpleSequenceLineParser.create(
 						l->{

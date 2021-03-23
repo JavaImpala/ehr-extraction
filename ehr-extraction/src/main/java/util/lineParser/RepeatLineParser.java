@@ -8,7 +8,6 @@ import org.apache.logging.log4j.Logger;
 
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
-import util.sequence.SequenceLineParser;
 
 public class RepeatLineParser implements LineParser{
 	private final static Logger log=LogManager.getLogger(RepeatLineParser.class.getSimpleName());
