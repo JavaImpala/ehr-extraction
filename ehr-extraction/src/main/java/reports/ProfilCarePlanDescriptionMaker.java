@@ -3,6 +3,7 @@ package reports;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import util.endable.EndableLineParser;
 import util.lineParser.LineParser;
 import util.lineParser.RepeatLineParser;
 import util.matcher.ChainMatch;
@@ -52,9 +53,26 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 		this.lineParser=RepeatLineParser.create(
 				newEntryMatcher,
 				()->{
-					System.out.println("");
-					return (l)->{
-						System.out.println("careplanDescriptionMaker===================="+l);
+					
+					return new EndableLineParser() {
+
+						@Override
+						public void readLine(String line) {
+							// TODO Auto-generated method stub
+							
+						}
+
+						@Override
+						public boolean isEnded() {
+							// TODO Auto-generated method stub
+							return false;
+						}
+
+						@Override
+						public void end() {
+							// TODO Auto-generated method stub
+							
+						}
 					};	
 				});
 	}

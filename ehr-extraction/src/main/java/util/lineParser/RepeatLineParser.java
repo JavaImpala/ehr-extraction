@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import util.endable.EndableLineParser;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 
@@ -15,14 +16,14 @@ public class RepeatLineParser implements LineParser{
 	
 
 	private Supplier<Matcher> shouldRestartSupplier;
-	private Supplier<LineParser> readers;
+	private Supplier<EndableLineParser> readers;
 	
 	private LinkedList<String> undigested=new LinkedList<>();
 	
-	private LineParser currentParser=null;
+	private EndableLineParser currentParser=null;
 	private Matcher shouldRestart=null;
 	
-	private RepeatLineParser(Supplier<Matcher> shouldRestartSupplier, Supplier<LineParser> readers) {
+	private RepeatLineParser(Supplier<Matcher> shouldRestartSupplier, Supplier<EndableLineParser> readers) {
 		this.shouldRestartSupplier = shouldRestartSupplier;
 		this.readers = readers;
 		
@@ -30,7 +31,7 @@ public class RepeatLineParser implements LineParser{
 		this.currentParser=this.readers.get();
 	}
 	
-	public static RepeatLineParser create(Supplier<Matcher> shouldRestartSupplier, Supplier<LineParser> readers) {
+	public static RepeatLineParser create(Supplier<Matcher> shouldRestartSupplier, Supplier<EndableLineParser> readers) {
 		return new RepeatLineParser(shouldRestartSupplier, readers);
 	}
 	
@@ -70,6 +71,8 @@ public class RepeatLineParser implements LineParser{
 		}else if(shouldRestart.getState()==MatchingState.MATCHED ) {
 			
 			shouldRestart=this.shouldRestartSupplier.get();
+			
+			currentParser.end();
 			
 			currentParser=this.readers.get();
 			currentParser.readLine(undigested.removeFirst());
