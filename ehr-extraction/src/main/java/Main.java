@@ -15,7 +15,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import reports.ProfilCarePlanParser;
+import reports.ProfilCarePlanPageParserManager;
 import util.pageProcessor.PageParserManager;
 
 public class Main {
@@ -31,7 +31,7 @@ public class Main {
 		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
 		
 		List<Supplier<PageParserManager>> pageParsers=new ArrayList<>();
-		pageParsers.add(()->ProfilCarePlanParser.create());
+		pageParsers.add(()->ProfilCarePlanPageParserManager.create());
 		
 		//lager reportMaker
 		MutableObject<Optional<PageParserManager>> currentManager=new MutableObject<>(Optional.empty());	
@@ -42,7 +42,7 @@ public class Main {
 				location,
 				pageLineIteratorSupplier->{
 					
-					if(counter.getValue()>1000) {
+					if(counter.getValue()>20) {
 						return;
 					}
 					
@@ -112,6 +112,7 @@ public class Main {
 					if(type.equals("text/plain")) {
 						FileReader reader=new FileReader(fileEntry);
 						List<String> lines=new BufferedReader(reader).lines().collect(Collectors.toList());
+						lines.remove(lines.size()-1);
 						reader.close();
 						
 						Supplier<Iterator<String>> getLines=()->{	

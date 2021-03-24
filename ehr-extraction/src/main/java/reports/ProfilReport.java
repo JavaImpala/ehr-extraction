@@ -17,7 +17,7 @@ public class ProfilReport{
 	private String author="Ukjent";
 	
 	private StringBuilder contentBuilder=new StringBuilder();
-	private String content="halo?";
+	private String content="Ikke fylt ut";
 
 	private boolean closed=false;
 	

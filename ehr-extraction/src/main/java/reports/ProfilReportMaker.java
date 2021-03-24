@@ -35,7 +35,6 @@ public class ProfilReportMaker implements ObservableLineParser{
 			report.addContent(line);
 		};
 		
-		
 		/*
 		 * Vakt: Dagvakt Status: Uendret Endre tiltak: Nei Prioritet gitt: Nei
 		 * 

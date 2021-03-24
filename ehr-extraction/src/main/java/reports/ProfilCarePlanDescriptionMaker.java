@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 import util.lineParser.LineParser;
+import util.lineParser.RepeatLineParser;
 import util.matcher.ChainMatch;
 import util.matcher.Matcher;
 import util.matcher.RetryMatcher;
@@ -37,22 +38,37 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 	public static Supplier<Matcher> newEntryMatcher=()->{
 		return new ChainMatch
 				.Builder()
-				.addSingleLinePattern(Pattern.compile("^Endret av:\\s+.*"))
+				.addSingleLinePattern(Pattern.compile("^Endret\\sAv:\\s+.*"))
 				.addSingleLinePattern(Pattern.compile("Fra\\s[-]\\sTil:\\s([0-9]{2}[.][0-9]{2}[.][0-9]{4}).*([0-9]{2}[.][0-9]{2}[.][0-9]{4})"))
 				.build();
 	};
 	
 	private final CarePlan plan;
-	private CarePlanDescription currentCarePlanDesc=null;
+	private final LineParser lineParser;
 	
-	public ProfilCarePlanDescriptionMaker(CarePlan plan) {
+	private ProfilCarePlanDescriptionMaker(CarePlan plan) {
 		this.plan = plan;
+		
+		this.lineParser=RepeatLineParser.create(
+				newEntryMatcher,
+				()->{
+					System.out.println("");
+					return (l)->{
+						System.out.println("careplanDescriptionMaker===================="+l);
+					};	
+				});
+	}
+	
+	public static ProfilCarePlanDescriptionMaker create(CarePlan carePlan) {
+		return new ProfilCarePlanDescriptionMaker(carePlan);
 	}
 
 	@Override
 	public void readLine(String line) {
-		
+		this.lineParser.readLine(line);
 	}
+
+	
 	
 	
 	

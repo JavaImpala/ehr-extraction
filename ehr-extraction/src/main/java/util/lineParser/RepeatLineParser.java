@@ -12,6 +12,8 @@ import util.matcher.MatchingState;
 public class RepeatLineParser implements LineParser{
 	private final static Logger log=LogManager.getLogger(RepeatLineParser.class.getSimpleName());
 	
+	
+
 	private Supplier<Matcher> shouldRestartSupplier;
 	private Supplier<LineParser> readers;
 	
@@ -20,7 +22,7 @@ public class RepeatLineParser implements LineParser{
 	private LineParser currentParser=null;
 	private Matcher shouldRestart=null;
 	
-	public RepeatLineParser(Supplier<Matcher> shouldRestartSupplier, Supplier<LineParser> readers) {
+	private RepeatLineParser(Supplier<Matcher> shouldRestartSupplier, Supplier<LineParser> readers) {
 		this.shouldRestartSupplier = shouldRestartSupplier;
 		this.readers = readers;
 		
@@ -28,13 +30,21 @@ public class RepeatLineParser implements LineParser{
 		this.currentParser=this.readers.get();
 	}
 	
+	public static RepeatLineParser create(Supplier<Matcher> shouldRestartSupplier, Supplier<LineParser> readers) {
+		return new RepeatLineParser(shouldRestartSupplier, readers);
+	}
+	
 	@Override
 	public void readLine(String s) {
+		log.info("read line "+s);
+		
 		undigested.add(s);
 		consumeFromQueue(undigested.size()-1);
 	}
 	
 	private void consumeFromQueue(int head) {
+		log.info("enter consumeFromQueue at "+head+" ("+undigested.size()+"). Current matcher har hashCode():"+shouldRestart.hashCode()+" og state "+shouldRestart.getState());
+		
 		if(head>=undigested.size()) {
 			log.info("returned fordi vi ikke har nok");
 			return;
@@ -43,13 +53,18 @@ public class RepeatLineParser implements LineParser{
 		String s=undigested.get(head);
 		
 		shouldRestart.readLine(s);
+		log.info("skjekker should restart etter readLine. Matcher med hashCode():"+shouldRestart.hashCode()+" er i state "+shouldRestart.getState());
+
+		
 		
 		if(shouldRestart.getState()==MatchingState.MATCHING) {
 			consumeFromQueue(head+1);
 		}else if(shouldRestart.getState()==MatchingState.UNMATCHED) {
 			currentParser.readLine(undigested.removeFirst());
+			log.info("sender linje til wrapped parser ("+s+")");
 			
 			shouldRestart=this.shouldRestartSupplier.get();
+			log.info("lager ny matcher med hashCode():"+shouldRestart.hashCode()+". Går tilbake til nytt forsøk på consume from queue på head 0");
 			
 			consumeFromQueue(0);
 		}else if(shouldRestart.getState()==MatchingState.MATCHED ) {

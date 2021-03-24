@@ -29,10 +29,29 @@ public class SimpleSequenceLineParser implements SequenceLineParser{
 	}
 	
 	public static SimpleSequenceLineParser listenOnce(EndableLineParser listener) {
-		
 		MatchAfterReadsSupplier matchAfterReads=MatchAfterReadsSupplier.create(1);
 		
-		return new SimpleSequenceLineParser(listener,()->Optional.empty(),()->Optional.of(matchAfterReads.get()));
+		return new SimpleSequenceLineParser(
+				new EndableLineParser() {
+
+					@Override
+					public void readLine(String line) {
+						listener.readLine(line);
+						listener.end();
+					}
+
+					@Override
+					public boolean isEnded() {
+						return listener.isEnded();
+					}
+
+					@Override
+					public void end() {
+						listener.end();
+					}
+				},
+				()->Optional.empty(),
+				()->Optional.of(matchAfterReads.get()));
 	}
 	
 	@Override

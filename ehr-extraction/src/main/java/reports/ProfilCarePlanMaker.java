@@ -17,7 +17,7 @@ public class ProfilCarePlanMaker implements EndableLineParser{
 	
 	
 	private ProfilCarePlanMaker(CarePlan plan) {
-		plan=plan;
+		this.plan=plan;
 		
 		this.parser=new SequenceLineParsers.Builder()
 				.addListener(SimpleSequenceLineParser.listenOnce(EndableWrapper.wrap(l->{
@@ -51,7 +51,6 @@ public class ProfilCarePlanMaker implements EndableLineParser{
 					}
 					
 				}))) 	
-				
 				.build();
 	}
 	

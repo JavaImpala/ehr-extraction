@@ -8,11 +8,7 @@ import util.matcher.Matcher;
 
 public class EndableToSequenceLineParser implements SequenceLineParser{
 	
-	
-
 	private final EndableLineParser wrapped;
-	
-	
 	
 	private EndableToSequenceLineParser(EndableLineParser wrapped) {
 		

@@ -1,13 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-    <Properties>
-        <Property name="LOG_PATTERN">%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} %p %m%n</Property>
-    </Properties>
- 
+    
     <Appenders>
         <Console name="console">
-            <PatternLayout pattern="${LOG_PATTERN}"/>
-        </Console>
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
     </Appenders>
  
     <Loggers>
@@ -15,6 +12,18 @@
             <AppenderRef ref="console"/>
         </Root>
         <logger name="Main" additivity="false" level="off">
+	        <appender-ref ref="console" />
+	    </logger>
+	    <logger name="SequenceLineParsers" additivity="false" level="off">
+	        <appender-ref ref="console" />
+	    </logger>
+	    
+	   
+	    <logger name="FirstPageReportReader" additivity="false" level="off">
+        	<appender-ref ref="console" />
+	    </logger>
+	    
+	    <logger name="RepeatLineParser" additivity="false" level="off">
 	        <appender-ref ref="console" />
 	    </logger>
     </Loggers>

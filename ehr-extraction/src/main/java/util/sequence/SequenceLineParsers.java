@@ -9,14 +9,13 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
 import util.endable.EndableLineParser;
 import util.lineParser.LineParser;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 
 public class SequenceLineParsers implements EndableLineParser{
-	private final static Logger log=LogManager.getLogger(SequenceLineParser.class.getSimpleName());
+	private final static Logger log=LogManager.getLogger(SequenceLineParsers.class.getSimpleName());
 	
 	private final EndableLineParser lineListener;
 	
@@ -33,7 +32,7 @@ public class SequenceLineParsers implements EndableLineParser{
 			private LineEater currentEater;
 			
 			private LineEater getEater(String food) {
-				log.info("lager ny eater basert på index "+currentIndex.getValue()+" "+makers.size());
+				log.info(hashCode()+" lager ny eater basert på index "+currentIndex.getValue()+" "+makers.size());
 				
 				if(currentIndex.getValue()<makers.size()-1) {
 					
@@ -58,7 +57,7 @@ public class SequenceLineParsers implements EndableLineParser{
 			public void readLine(String s) {
 				undigested.add(s);
 				
-				log.info("consuming after eatLine "+undigested.size());
+				log.info(hashCode()+" consuming after eatLine "+undigested.size());
 				
 				if(currentEater==null) {
 					consumeFood(0);
@@ -69,10 +68,10 @@ public class SequenceLineParsers implements EndableLineParser{
 			}
 			
 			private void consumeFood(int head) {
-				
+				log.info(hashCode()+" consuming food med head:"+head);
 				
 				if(head>=undigested.size()) {
-					log.info("returned fordi vi ikke har nok");
+					log.info(hashCode()+" returned fordi vi ikke har nok");
 					return;
 				}
 				
@@ -88,24 +87,43 @@ public class SequenceLineParsers implements EndableLineParser{
 				
 				currentEater.digest(s);
 				
-				log.info("forsøker å spise "+s+" "+head+" "+currentEater.end+" "+currentEater.start+" "+currentEater.state);
+				log.info(hashCode()+" forsøker å spise "+s+" "+head+" "+currentEater.end+" "+currentEater.start+" "+currentEater.state);
 				
 				if(currentEater.state==LineEaterState.EATEN) {
-					log.info("===================>SPISER "+s);
+					log.info(hashCode()+" =>SPISER "+s);
 					
 					currentEater.eater.readLine(undigested.removeFirst());
-					currentEater=null;
-					consumeFood(0);
+					
+					
+					if(currentEater.eater.isEnded()) {
+						currentIndex.increment();
+						currentEater=null;
+						
+						log.info(hashCode()+" FORDI EATER ER ENDED GÅR VI TIL NESTE!=> "+currentIndex.intValue()+"/"+makers.size()+" ");
+						
+						if(currentIndex.getValue()>=makers.size()) {
+							log.info(hashCode()+" ended");
+							ended=true;
+						}else {
+							consumeFood(0);
+						}
+					}else {
+						currentEater=null;
+						consumeFood(0);
+					}
+					
+					
 				}else if(currentEater.state==LineEaterState.EATING) {
+					log.info(hashCode()+" =>Forsøker å spise "+s);
 					consumeFood(head+1);
 				}else if(currentEater.state==LineEaterState.GOTONEXT) {
-					
-					log.info("VI GÅR TIL NESTE!============="+undigested.get(0));
-					
 					currentIndex.increment();
 					currentEater=null;
 					
+					log.info(hashCode()+" VI GÅR TIL NESTE!=> "+currentIndex.intValue()+"/"+makers.size()+" "+undigested.get(0));
+					
 					if(currentIndex.getValue()>=makers.size()) {
+						log.info(hashCode()+" ended");
 						ended=true;
 					}else {
 						consumeFood(0);
@@ -166,12 +184,12 @@ public class SequenceLineParsers implements EndableLineParser{
 		
 		private LineEaterState state=LineEaterState.EATING;	
 		
-		private final LineParser eater;
+		private final EndableLineParser eater;
 		
 		private LineEater(
 				Optional<Matcher> start,
 				Optional<Matcher> end,
-				LineParser eater) {
+				EndableLineParser eater) {
 			
 			this.start=start;
 			this.end=end;

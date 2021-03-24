@@ -7,29 +7,25 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import reports.CarePlan;
-import reports.ProfilCarePlanMaker;
 import reports.ProfilReportMaker;
-import util.PageHeaderIdentifier;
-import util.matcher.ListenUntilMatchedOrUnmatched;
+import util.endable.EndableLineParser;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 import util.pageProcessor.PageParser;
-import util.sequence.EndableToSequenceLineParser;
-import util.sequence.SequenceLineParsers;
-import util.sequence.SimpleSequenceLineParser;
 
 public class FirstPageReportReader implements PageParser{
 	private final static Logger log=LogManager.getLogger(FirstPageReportReader.class.getSimpleName());
 	
 	private Optional<ProfilReportMaker> currentReport;
 
-	private FirstPageReportReader() {
-		
+	private final EndableLineParser parser;
+
+	private FirstPageReportReader(EndableLineParser contentParser) {
+		this.parser=contentParser;
 	}
 	
-	public static FirstPageReportReader create() {
-		return new FirstPageReportReader();
+	public static FirstPageReportReader create(EndableLineParser contentParser) {
+		return new FirstPageReportReader(contentParser);
 	}
 
 	@Override
@@ -63,34 +59,23 @@ public class FirstPageReportReader implements PageParser{
 		}
 		
 		
-		System.out.println("first page har match "+validator.getState());
+		log.info("first page har match "+validator.getState());
 		
-		CarePlan carePlan=new CarePlan();
+		
 		
 		//parse
 		if(validator.getState()==MatchingState.MATCHED) {
 			Iterator<String> readIterator=lines.get();
 			
-			SequenceLineParsers reader=new SequenceLineParsers.Builder()
-				.addListener(ListenUntilMatchedOrUnmatched.create(PageHeaderIdentifier.matcher.get()))
-				.addListener(EndableToSequenceLineParser.wrap(ProfilCarePlanMaker.create(carePlan)))
-				.addListener(
-					SimpleSequenceLineParser.create(
-						l->{
-							System.out.println("*************-leser=> "+l);
-						},
-						()->Optional.empty(),
-						()->Optional.of(ReportEndMatcher.endMatcher.get())
-						))
-				.build();
-			
 			while(readIterator.hasNext()) {
 				
 				String line =readIterator.next();
 				
-				if(!reader.isEnded()) {
+			
+				
+				if(!parser.isEnded()) {
 					log.info("reads line "+line);
-					reader.readLine(line);
+					parser.readLine(line);
 				}else {
 					log.info("reader is ended!");
 					return false;

@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
+import util.endable.EndableLineParser;
 import util.matcher.ChainMatch;
 import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
@@ -45,12 +45,15 @@ import util.sequence.SimpleSequenceLineParser;
 public class NormalReportLineParser implements PageParser{
 	private final static Logger log=LogManager.getLogger(NormalReportLineParser.class.getSimpleName());
 	
-	public static  NormalReportLineParser create() {
-		return new  NormalReportLineParser();
+	private final EndableLineParser contentParser;
+	
+	public static  NormalReportLineParser create(EndableLineParser contentParser) {
+		return new  NormalReportLineParser(contentParser);
 	}
 
-	private NormalReportLineParser() {
+	private NormalReportLineParser(EndableLineParser contentParser) {
 		log.info("is created!");
+		this.contentParser=contentParser;
 	}
 
 	@Override
@@ -80,27 +83,15 @@ public class NormalReportLineParser implements PageParser{
 		//parse
 		
 		if(validator.getState()==MatchingState.MATCHED) {
-			Iterator<String> readIterator=lines.get();
-			
-			SequenceLineParsers reader=new SequenceLineParsers.Builder()
-				.addListener(ListenUntilMatchedOrUnmatched.create(ReportStartMatcher.startMatcher.get()))
-				.addListener(
-					SimpleSequenceLineParser.create(
-						l->{
-							//System.out.println("*************=leser=> "+l);
-						},
-						()->Optional.empty(),
-						()->Optional.of(ReportEndMatcher.endMatcher.get())
-						))
-				.build();
+			Iterator<String> readIterator=matchIterator;
 			
 			while(readIterator.hasNext()) {
 				
 				String line =readIterator.next();
 				
-				if(!reader.isEnded()) {
+				if(!contentParser.isEnded()) {
 					log.info("reads line "+line);
-					reader.readLine(line);
+					contentParser.readLine(line);
 				}else {
 					log.info("reader is ended!");
 					return false;
