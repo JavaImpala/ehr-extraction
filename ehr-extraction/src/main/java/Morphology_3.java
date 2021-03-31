@@ -65,6 +65,7 @@ class Morphology_3Run {
         
         Mat copy = new Mat(src.size(),src.type(),new Scalar(255,255,255));
        
+        
         src.copyTo(copy);
         
         MatOfPoint2f[] contoursPoly  = new MatOfPoint2f[contours.size()];
