@@ -6,9 +6,10 @@ import java.util.regex.Pattern;
 import util.endable.EndableLineParser;
 import util.lineParser.LineParser;
 import util.lineParser.RepeatLineParser;
+import util.lineParser.TextLine;
 import util.matcher.ChainMatch;
 import util.matcher.Matcher;
-import util.matcher.RetryMatcher;
+import util.matcher.RetryRegexMatcher;
 
 /*
 Endret Av: Torbjørn Torsvik
@@ -32,7 +33,7 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 		return new ChainMatch
 					.Builder()
 					.addSingleLinePattern(Pattern.compile("^Rapporter:\\s+\\d+"))
-					.addMatcher(RetryMatcher.create(ProfilReportMaker.initiateRegexPattern,20))
+					.addMatcher(RetryRegexMatcher.create(ProfilReportMaker.initiateRegexPattern,20))
 					.build();
 	};
 	
@@ -57,7 +58,7 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 					return new EndableLineParser() {
 
 						@Override
-						public void readLine(String line) {
+						public void readLine(TextLine line) {
 							// TODO Auto-generated method stub
 							
 						}
@@ -82,7 +83,7 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 	}
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		this.lineParser.readLine(line);
 	}
 

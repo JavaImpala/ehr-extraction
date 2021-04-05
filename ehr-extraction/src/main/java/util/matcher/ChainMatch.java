@@ -9,11 +9,13 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import util.lineParser.TextLine;
+
 
 public class ChainMatch implements Matcher{
 	private final static Logger log=LogManager.getLogger(ChainMatch.class.getSimpleName());
 	
-	private Consumer<String> lineListener=s->{};
+	private Consumer<TextLine> lineListener=s->{};
 	
 	private MatchingState state=MatchingState.READY;
 	
@@ -60,7 +62,7 @@ public class ChainMatch implements Matcher{
 	}
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		lineListener.accept(line);
 	}
 	
@@ -72,7 +74,7 @@ public class ChainMatch implements Matcher{
 		}
 		
 		public Builder addSingleLinePattern(Pattern pattern) {
-			this.patterns.add(SingleLineMatcher.wrapPattern(pattern));return this;
+			this.patterns.add(SingleRegexLineMatcher.wrapPattern(pattern));return this;
 		}
 		public Builder addMatcher(Matcher matcher) {
 			this.patterns.add(matcher);return this;

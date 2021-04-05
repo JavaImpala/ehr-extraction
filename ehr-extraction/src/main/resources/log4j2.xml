@@ -8,7 +8,7 @@
     </Appenders>
  
     <Loggers>
-        <Root level="error">
+        <Root level="off">
             <AppenderRef ref="console"/>
         </Root>
         <logger name="Main" additivity="false" level="off">
@@ -20,6 +20,10 @@
 	    
 	   
 	    <logger name="FirstPageReportReader" additivity="false" level="off">
+        	<appender-ref ref="console" />
+	    </logger>
+	    
+	    <logger name="NormalReportLineParser" additivity="false" level="info">
         	<appender-ref ref="console" />
 	    </logger>
 	    

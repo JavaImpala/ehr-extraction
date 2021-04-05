@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import util.matcher.ChainMatch;
 import util.matcher.Matcher;
-import util.matcher.MatchingUntil;
+import util.matcher.MatchingUntilRegex;
 
 /**
  * prosseserer sider i profil pdf. Luker ut header og sender resten til sub makers. 
@@ -24,7 +24,7 @@ public class PageHeaderIdentifier{
 	public static final Pattern lastHeaderLinePattern=Pattern.compile(lastHeaderLine);
 	
 	public static final Supplier<Matcher> matcher=()->new ChainMatch.Builder()
-			.addMatcher(MatchingUntil.create(lastHeaderLinePattern))
+			.addMatcher(MatchingUntilRegex.create(lastHeaderLinePattern))
 			.build();
 	
 }

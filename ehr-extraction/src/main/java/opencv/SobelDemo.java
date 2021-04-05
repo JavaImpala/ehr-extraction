@@ -1,3 +1,4 @@
+package opencv;
 
 import org.opencv.core.*;
 import org.opencv.highgui.HighGui;

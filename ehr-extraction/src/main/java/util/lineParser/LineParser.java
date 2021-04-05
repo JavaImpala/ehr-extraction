@@ -1,5 +1,5 @@
 package util.lineParser;
 
 public interface LineParser {
-	public void readLine(String line);
+	public void readLine(TextLine line);
 }

@@ -1,5 +1,7 @@
 package util.endable;
 
+import util.lineParser.TextLine;
+
 public class ObservableEndableLineParser implements EndableLineParser{
 
 	private final EndableLineParser wrapped;
@@ -29,7 +31,7 @@ public class ObservableEndableLineParser implements EndableLineParser{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		wrapped.readLine(line);
 		
 		if(wrapped.isEnded()) {
@@ -47,5 +49,12 @@ public class ObservableEndableLineParser implements EndableLineParser{
 		wrapped.end();
 		onEnded.run();
 	}
+
+	@Override
+	public String toString() {
+		return "ObservableEndableLineParser [wrapped=" + wrapped.hashCode() + ", hashCode()=" + hashCode() + "]";
+	}
+	
+	
 
 }

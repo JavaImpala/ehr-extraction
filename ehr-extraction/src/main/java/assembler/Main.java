@@ -1,7 +1,6 @@
+package assembler;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,7 +15,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import reports.ProfilCarePlanPageParserManager;
+import util.pageProcessor.Page;
 import util.pageProcessor.PageParserManager;
+import util.struct.StructPage;
 
 public class Main {
 	
@@ -26,7 +27,7 @@ public class Main {
 		
 		log.info("starting application");
 		
-		String location="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full";
+		String location="/media/tor003/2A9C-E69E/forskninguttrekkABB050321full-psm1";
 		
 		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
 		
@@ -42,9 +43,7 @@ public class Main {
 				location,
 				pageLineIteratorSupplier->{
 					
-					if(counter.getValue()>20) {
-						return;
-					}
+					
 					
 					counter.increment();
 					
@@ -100,33 +99,41 @@ public class Main {
 	private static class PageLineSupplier{
 		
 		
-		private PageLineSupplier(String location,Consumer<Supplier<Iterator<String>>> listener) {
+		private PageLineSupplier(String location,Consumer<Page> listener) {
 			
-			try {
-				File folder=new File(location);
-				
-				for(File fileEntry:folder.listFiles()) {
+			int pageNumber=1;
+			
+			while(true) {
+				try {
 					
-					String type=Files.probeContentType(fileEntry.toPath());
+					listener.accept(
+							new Page(
+									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm6.txt"),
+									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm6.txt"),
+									new StructPage(fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_struct.hocr"))));
 					
-					if(type.equals("text/plain")) {
-						FileReader reader=new FileReader(fileEntry);
-						List<String> lines=new BufferedReader(reader).lines().collect(Collectors.toList());
-						lines.remove(lines.size()-1);
-						reader.close();
-						
-						Supplier<Iterator<String>> getLines=()->{	
-							return lines.iterator();	
-						};
-						
-						listener.accept(getLines);
-						
-						reader.close();
-					}
+					pageNumber++;
+				}catch(Exception e) {
+					System.out.println("break at page: "+pageNumber);
+					e.printStackTrace();
+					break;
+					//e.printStackTrace();
 				}
-			}catch(Exception e) {
-				e.printStackTrace();
 			}
+			
+		}
+		
+		private List<String> fileToTextLines(String path) throws Exception{
+			System.out.println(path);
+			
+			FileReader reader=new FileReader(path);
+			List<String> lines=new BufferedReader(reader).lines().collect(Collectors.toList());
+		
+			reader.close();
+			
+			return lines;
 		}
 	}
+	
+	
 }

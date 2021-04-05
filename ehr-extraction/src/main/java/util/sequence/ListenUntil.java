@@ -2,6 +2,7 @@ package util.sequence;
 
 import util.lineParser.LineListenerState;
 import util.lineParser.ObservableLineParser;
+import util.lineParser.TextLine;
 
 public class ListenUntil implements ObservableLineParser{
 	
@@ -11,7 +12,7 @@ public class ListenUntil implements ObservableLineParser{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		// TODO Auto-generated method stub
 		
 	}

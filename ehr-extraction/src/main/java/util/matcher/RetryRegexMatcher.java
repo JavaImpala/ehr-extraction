@@ -2,7 +2,9 @@ package util.matcher;
 
 import java.util.regex.Pattern;
 
-public class RetryMatcher implements Matcher{
+import util.lineParser.TextLine;
+
+public class RetryRegexMatcher implements Matcher{
 	
 	
 
@@ -13,22 +15,22 @@ public class RetryMatcher implements Matcher{
 	
 	private MatchingState state=MatchingState.READY;
 	
-	private RetryMatcher(Pattern pattern, int maxLines) {
+	private RetryRegexMatcher(Pattern pattern, int maxLines) {
 		this.pattern = pattern;
 		this.maxLines = maxLines;
 	}
 	
-	public static RetryMatcher create(Pattern pattern, int maxLines) {
-		return new RetryMatcher(pattern, maxLines);
+	public static RetryRegexMatcher create(Pattern pattern, int maxLines) {
+		return new RetryRegexMatcher(pattern, maxLines);
 	}
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		if(state==MatchingState.MATCHED || state==MatchingState.UNMATCHED) {
 			return;
 		}
 		
-		if(this.pattern.matcher(line).matches()){
+		if(this.pattern.matcher(line.getLineConcatString()).matches()){
 			state=MatchingState.MATCHED;
 		}else if(lineCounter<maxLines){
 			state=MatchingState.MATCHING;

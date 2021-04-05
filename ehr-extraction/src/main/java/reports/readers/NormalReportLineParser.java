@@ -8,10 +8,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import util.endable.EndableLineParser;
+import util.lineParser.TextLine;
 import util.matcher.ChainMatch;
 import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
+import util.pageProcessor.Page;
 import util.pageProcessor.PageParser;
 import util.sequence.SequenceLineParsers;
 import util.sequence.SimpleSequenceLineParser;
@@ -57,11 +59,11 @@ public class NormalReportLineParser implements PageParser{
 	}
 
 	@Override
-	public boolean tryToProccessPage(Supplier<Iterator<String>> lines) {
+	public boolean tryToProccessPage(Page page) {
 		
 		//validate that its a reportPage
 		
-		Iterator<String> matchIterator=lines.get();
+		Iterator<TextLine> matchIterator=page.getStructPage().lines().iterator();
 		Matcher validator = ReportStartMatcher.startMatcher.get();
 		
 		while(matchIterator.hasNext()) {
@@ -83,11 +85,11 @@ public class NormalReportLineParser implements PageParser{
 		//parse
 		
 		if(validator.getState()==MatchingState.MATCHED) {
-			Iterator<String> readIterator=matchIterator;
+			Iterator<TextLine> readIterator=matchIterator;
 			
 			while(readIterator.hasNext()) {
 				
-				String line =readIterator.next();
+				TextLine line =readIterator.next();
 				
 				if(!contentParser.isEnded()) {
 					log.info("reads line "+line);

@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
+import util.lineParser.TextLine;
 import util.matcher.ListenUntilMatchedOrUnmatched;
 import util.matcher.Matcher;
 
@@ -38,7 +39,7 @@ public class ListenFrom implements SequenceLineParser{
 
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		listener.readLine(line);
 	}
 

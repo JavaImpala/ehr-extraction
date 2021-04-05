@@ -3,8 +3,9 @@ package util.sequence;
 import java.util.Optional;
 
 import util.endable.EndableLineParser;
-import util.matcher.UnmatchUntilEnoughReads;
+import util.lineParser.TextLine;
 import util.matcher.Matcher;
+import util.matcher.UnmatchUntilEnoughReads;
 
 public class EndableToSequenceLineParser implements SequenceLineParser{
 	
@@ -20,7 +21,7 @@ public class EndableToSequenceLineParser implements SequenceLineParser{
 	}
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		wrapped.readLine(line);
 	}
 

@@ -3,6 +3,7 @@ package util.matcher;
 import java.util.Optional;
 import java.util.regex.Pattern;
 
+import util.lineParser.TextLine;
 import util.sequence.SequenceLineParser;
 
 public class ListenUntilMatchedOrUnmatched implements SequenceLineParser{
@@ -22,11 +23,11 @@ public class ListenUntilMatchedOrUnmatched implements SequenceLineParser{
 	}
 	
 	public static Matcher create(Pattern pattern) {
-		return SingleLineMatcher.wrapPattern(pattern);
+		return SingleRegexLineMatcher.wrapPattern(pattern);
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		matcher.readLine(line);
 		
 		if(matcher.getState()==MatchingState.MATCHED || matcher.getState()==MatchingState.UNMATCHED) {

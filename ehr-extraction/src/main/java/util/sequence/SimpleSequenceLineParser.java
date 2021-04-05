@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineParser.LineParser;
+import util.lineParser.TextLine;
 import util.matcher.MatchAfterReadsSupplier;
 import util.matcher.Matcher;
 
@@ -35,7 +36,7 @@ public class SimpleSequenceLineParser implements SequenceLineParser{
 				new EndableLineParser() {
 
 					@Override
-					public void readLine(String line) {
+					public void readLine(TextLine line) {
 						listener.readLine(line);
 						listener.end();
 					}
@@ -55,7 +56,7 @@ public class SimpleSequenceLineParser implements SequenceLineParser{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		this.listener.readLine(line);
 	}
 

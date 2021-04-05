@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import util.matcher.ChainMatch;
 import util.matcher.Matcher;
-import util.matcher.MatchingUntil;
+import util.matcher.MatchingUntilRegex;
 
 /*
 *
@@ -69,7 +69,7 @@ import util.matcher.MatchingUntil;
 
 public class ReportStartMatcher {
 	public static final Supplier<Matcher> startMatcher=()->new ChainMatch.Builder()
-			.addMatcher(MatchingUntil.create(Pattern.compile("^Fødselsdato.*/.*Persnr:.*")))
+			.addMatcher(MatchingUntilRegex.create(Pattern.compile("^Fødselsdato.*/.*Persnr:.*")))
 			.addSingleLinePattern(Pattern.compile("^Plan/rapport.*"))
 			.addSingleLinePattern(Pattern.compile("^Plankategori:.*"))
 			.addSingleLinePattern(Pattern.compile("^Planområde:.*"))

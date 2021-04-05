@@ -1,37 +1,41 @@
+package opencv;
+
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Image;
-import java.util.ArrayList;
-import java.util.List;
-
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-
+import javax.swing.JSlider;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
-public class RemoveEdgesDemo {
-	
+public class BasicThresholdDemo {
+    private static int MAX_VALUE = 255;
+    private static int MAX_TYPE = 4;
+    private static int MAX_BINARY_VALUE = 255;
     private static final String WINDOW_NAME = "Threshold Demo";
-    
+    private static final String TRACKBAR_TYPE = "<html><body>Type: <br> 0: Binary <br> "
+            + "1: Binary Inverted <br> 2: Truncate <br> "
+            + "3: To Zero <br> 4: To Zero Inverted</body></html>";
+    private static final String TRACKBAR_VALUE = "Value";
+    private int thresholdValue = 0;
+    private int thresholdType = 3;
     private Mat src;
     private Mat srcGray = new Mat();
     private Mat dst = new Mat();
     private JFrame frame;
     private JLabel imgLabel;
     
-    public RemoveEdgesDemo(String[] args) {
+    public BasicThresholdDemo(String[] args) {
         String imagePath = "/home/tor003/Downloads/table.png";
-    	//String imagePath="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full-psm1/image-600.jpg";
-    	
         if (args.length > 0) {
             imagePath = args[0];
         }
@@ -61,47 +65,46 @@ public class RemoveEdgesDemo {
             return;
         }
         JPanel sliderPanel = new JPanel();
-       
+        sliderPanel.setLayout(new BoxLayout(sliderPanel, BoxLayout.PAGE_AXIS));
+        sliderPanel.add(new JLabel(TRACKBAR_TYPE));
         // Create Trackbar to choose type of Threshold
-        
+        JSlider sliderThreshType = new JSlider(0, MAX_TYPE, thresholdType);
+        sliderThreshType.setMajorTickSpacing(1);
+        sliderThreshType.setMinorTickSpacing(1);
+        sliderThreshType.setPaintTicks(true);
+        sliderThreshType.setPaintLabels(true);
+        sliderPanel.add(sliderThreshType);
+        sliderPanel.add(new JLabel(TRACKBAR_VALUE));
         // Create Trackbar to choose Threshold value
-        
-      
+        JSlider sliderThreshValue = new JSlider(0, MAX_VALUE, 0);
+        sliderThreshValue.setMajorTickSpacing(50);
+        sliderThreshValue.setMinorTickSpacing(10);
+        sliderThreshValue.setPaintTicks(true);
+        sliderThreshValue.setPaintLabels(true);
+        sliderPanel.add(sliderThreshValue);
+        sliderThreshType.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                thresholdType = source.getValue();
+                update();
+            }
+        });
+        sliderThreshValue.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JSlider source = (JSlider) e.getSource();
+                thresholdValue = source.getValue();
+                update();
+            }
+        });
+        pane.add(sliderPanel, BorderLayout.PAGE_START);
         imgLabel = new JLabel(new ImageIcon(img));
         pane.add(imgLabel, BorderLayout.CENTER);
-        
-        update();
     }
     private void update() {
-    	
-    	Mat thresh=new Mat();
-        Imgproc.threshold(srcGray,thresh,240,255,Imgproc.THRESH_OTSU);
-        
-        //Remove horizontal lines
-        Mat horizontal_kernel = Imgproc.getStructuringElement(Imgproc.MORPH_RECT,new Size(500,2));
-        
-        Mat morph=new Mat();
-        
-        Imgproc.morphologyEx(thresh,morph, Imgproc.MORPH_OPEN,horizontal_kernel);
-        
-        List<MatOfPoint> contours = new ArrayList<>();
-        
-        
-        
-        Imgproc.findContours(morph, contours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        
-        Mat copy = new Mat(srcGray.size(),srcGray.type(),new Scalar(255,255,255));
-        srcGray.copyTo(copy);
-        
-        for (int i = 0; i < contours.size(); i++) {
-        	MatOfPoint cont = contours.get(i);
-        	
-        	System.out.println("drawing "+cont.width()+" "+cont.height()+" "+cont.cols()+" "+cont.rows());
-            Imgproc.drawContours(copy, contours,i, new Scalar(255,255,255),2);
-            
-        }
-        
-        Image img = HighGui.toBufferedImage(morph);
+        Imgproc.threshold(srcGray, dst, thresholdValue, MAX_BINARY_VALUE, thresholdType);
+        Image img = HighGui.toBufferedImage(dst);
         imgLabel.setIcon(new ImageIcon(img));
         frame.repaint();
     }
@@ -113,7 +116,7 @@ public class RemoveEdgesDemo {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                new RemoveEdgesDemo(args);
+                new BasicThresholdDemo(args);
             }
         });
     }

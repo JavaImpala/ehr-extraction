@@ -1,6 +1,7 @@
 package util.endable;
 
 import util.lineParser.LineParser;
+import util.lineParser.TextLine;
 
 public class EndableWrapper implements EndableLineParser{
 	
@@ -17,7 +18,7 @@ public class EndableWrapper implements EndableLineParser{
 
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		listener.readLine(line);
 	}
 

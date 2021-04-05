@@ -1,5 +1,6 @@
 package reports;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -9,7 +10,8 @@ import util.endable.ObservableEndableLineParser;
 import util.lineParser.LineListenerState;
 import util.lineParser.ObservableLineParser;
 import util.lineParser.RepeatLineParser;
-import util.matcher.SingleLineMatcher;
+import util.lineParser.TextLine;
+import util.matcher.SingleRegexLineMatcher;
 import util.sequence.SequenceLineParsers;
 import util.sequence.SimpleSequenceLineParser;
 
@@ -25,14 +27,14 @@ public class ProfilReportMaker implements ObservableLineParser{
 	private ProfilReportMaker() {
 		
 		this.lineParser=RepeatLineParser.create(
-				()->SingleLineMatcher.wrapPattern(initiateRegexPattern),
+				()->SingleRegexLineMatcher.wrapPattern(initiateRegexPattern),
 				()->{
 					ProfilReport report=new ProfilReport();
 					
 					return ObservableEndableLineParser.wrap(
 							new SequenceLineParsers.Builder()
 								.addListener(SimpleSequenceLineParser.listenOnce(EndableWrapper.wrap(line->{
-									Matcher matcher = initiateRegexPattern.matcher(line);
+									Matcher matcher = initiateRegexPattern.matcher(line.getLineConcatString());
 									
 									if(matcher.find()){	
 										report.setReportNumber(Integer.valueOf(matcher.group(1)));
@@ -43,16 +45,16 @@ public class ProfilReportMaker implements ObservableLineParser{
 									
 								})))	
 								.addListener(SimpleSequenceLineParser.listenOnce(EndableWrapper.wrap(line->{
-									report.setDaytimeReportType(RegexTools.getValueAfter(line,"Vakt:"));
+									report.setDaytimeReportType(RegexTools.getValueAfter(line.getLineConcatString(),"Vakt:"));
 									
-									report.setChangedStatus((RegexTools.getValueAfter(line,"Status:")=="Uendret")?false:true);
-									report.setChangedPlan((RegexTools.getValueAfter(line,"Endre tiltak:")=="Nei")?false:true);
+									report.setChangedStatus((RegexTools.getValueAfter(line.getLineConcatString(),"Status:")=="Uendret")?false:true);
+									report.setChangedPlan((RegexTools.getValueAfter(line.getLineConcatString(),"Endre tiltak:")=="Nei")?false:true);
 									
-									report.setPriority((RegexTools.getValueAfter(line,"Prioritet gitt:")=="Nei")?false:true);
+									report.setPriority((RegexTools.getValueAfter(line.getLineConcatString(),"Prioritet gitt:")=="Nei")?false:true);
 								})))	
-								.addListener(SimpleSequenceLineParser.listenOnce(EndableWrapper.wrap(line->{
-									report.addContent(line);
-								}))) 	
+								.addListener(SimpleSequenceLineParser.create(EndableWrapper.wrap(line->{
+									report.addContent(line.getLineConcatString());
+								}), ()->Optional.empty(), ()->Optional.empty())) 	
 								.build(),
 							()->{
 								report.close();
@@ -68,14 +70,10 @@ public class ProfilReportMaker implements ObservableLineParser{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		this.lineParser.readLine(line);
 	}
 	
-	
-
-	
-
 	@Override
 	public LineListenerState getState() {
 		return state;

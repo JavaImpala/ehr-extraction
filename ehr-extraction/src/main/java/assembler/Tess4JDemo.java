@@ -1,3 +1,4 @@
+package assembler;
 import java.io.File;
 import java.io.IOException;
 
@@ -24,18 +25,19 @@ public class Tess4JDemo {
         
         
         
-        String location="/media/tor003/6887-88BA/ABB/forskninguttrekkABB050321full-psm1";
+        String location="/media/tor003/2A9C-E69E/forskninguttrekkABB050321full-psm1/";
        
         int page=600;
         
-        File file=new File(location+"/image-"+page+"_psm1.hocr");
+        File file=new File(location+"/image-"+page+"-proc_struct.hocr");
        
         try {
 			Document doc=Jsoup.parse(file,"UTF-8");
 			
 			
 			for(Element element:doc.getAllElements()) {
-				System.out.println(element);
+				System.out.println(element.tag());
+				System.out.println(element.attributes());
 			}
 			
 		} catch (IOException e) {

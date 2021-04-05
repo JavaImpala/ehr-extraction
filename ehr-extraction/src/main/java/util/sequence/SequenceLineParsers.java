@@ -10,7 +10,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import util.endable.EndableLineParser;
-import util.lineParser.LineParser;
+import util.lineParser.TextLine;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
 
@@ -21,6 +21,8 @@ public class SequenceLineParsers implements EndableLineParser{
 	
 	private SequenceLineParsers(List<SequenceLineParser> makers) {
 		
+		log.info(hashCode()+" ********************************** lager ny SequenceLineParsers "+hashCode());
+		
 		//MutableObject<String> prevLine=new MutableObject<>("");
 		MutableInt currentIndex=new MutableInt(0);
 		
@@ -28,10 +30,10 @@ public class SequenceLineParsers implements EndableLineParser{
 			
 			private boolean ended=false;
 			
-			private LinkedList<String> undigested=new LinkedList<>();
+			private LinkedList<TextLine> undigested=new LinkedList<>();
 			private LineEater currentEater;
 			
-			private LineEater getEater(String food) {
+			private LineEater getEater(TextLine food) {
 				log.info(hashCode()+" lager ny eater basert på index "+currentIndex.getValue()+" "+makers.size());
 				
 				if(currentIndex.getValue()<makers.size()-1) {
@@ -54,7 +56,7 @@ public class SequenceLineParsers implements EndableLineParser{
 			
 			
 			@Override
-			public void readLine(String s) {
+			public void readLine(TextLine s) {
 				undigested.add(s);
 				
 				log.info(hashCode()+" consuming after eatLine "+undigested.size());
@@ -75,7 +77,7 @@ public class SequenceLineParsers implements EndableLineParser{
 					return;
 				}
 				
-				String s=undigested.get(head);
+				TextLine s=undigested.get(head);
 				
 				if(currentEater==null) {
 					if(head!=0) {
@@ -104,6 +106,7 @@ public class SequenceLineParsers implements EndableLineParser{
 						if(currentIndex.getValue()>=makers.size()) {
 							log.info(hashCode()+" ended");
 							ended=true;
+							
 						}else {
 							consumeFood(0);
 						}
@@ -117,6 +120,7 @@ public class SequenceLineParsers implements EndableLineParser{
 					log.info(hashCode()+" =>Forsøker å spise "+s);
 					consumeFood(head+1);
 				}else if(currentEater.state==LineEaterState.GOTONEXT) {
+					
 					currentIndex.increment();
 					currentEater=null;
 					
@@ -140,14 +144,16 @@ public class SequenceLineParsers implements EndableLineParser{
 
 			@Override
 			public void end() {
-				ended=true;
-				makers.get(currentIndex.getValue()).end();
+				if(ended!=true) {
+					ended=true;
+					makers.get(currentIndex.getValue()).end();
+				}
 			}
 		};
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		lineListener.readLine(line);
 	}
 	
@@ -226,7 +232,7 @@ public class SequenceLineParsers implements EndableLineParser{
 			
 		}
 		
-		private LineEaterState digest(String line) {
+		private LineEaterState digest(TextLine line) {
 			end.ifPresent(m->{m.readLine(line);});
 			start.ifPresent(m->m.readLine(line));
 			

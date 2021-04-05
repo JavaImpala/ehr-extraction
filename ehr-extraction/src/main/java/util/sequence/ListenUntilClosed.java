@@ -5,8 +5,9 @@ import java.util.Optional;
 import util.endable.EndableLineParser;
 import util.endable.EndableWrapper;
 import util.lineParser.LineParser;
-import util.matcher.UnmatchUntilEnoughReads;
+import util.lineParser.TextLine;
 import util.matcher.Matcher;
+import util.matcher.UnmatchUntilEnoughReads;
 
 public class ListenUntilClosed implements SequenceLineParser{
 	private Optional<Matcher> shouldEnd=Optional.empty();
@@ -29,7 +30,7 @@ public class ListenUntilClosed implements SequenceLineParser{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		wrapped.readLine(line);
 		shouldEnd=Optional.of(UnmatchUntilEnoughReads.alwaysMatch());
 	}

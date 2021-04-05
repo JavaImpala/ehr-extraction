@@ -2,6 +2,8 @@ package util.matcher;
 
 import java.util.regex.Pattern;
 
+import util.lineParser.TextLine;
+
 public class MultiLineRegex implements Matcher{
 	
 	private final Pattern pattern;
@@ -18,7 +20,7 @@ public class MultiLineRegex implements Matcher{
 	}
 
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		if(state==MatchingState.MATCHED || state==MatchingState.UNMATCHED) {
 			return;
 		}

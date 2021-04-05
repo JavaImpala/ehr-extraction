@@ -2,6 +2,8 @@ package util.matcher;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import util.lineParser.TextLine;
+
 public class UnmatchUntilEnoughReads implements Matcher{
 	
 	private MatchingState state=MatchingState.READY;
@@ -27,7 +29,7 @@ public class UnmatchUntilEnoughReads implements Matcher{
 	}
 	
 	@Override
-	public void readLine(String line) {
+	public void readLine(TextLine line) {
 		if(counter.getValue()>=maxLines) {
 			state=MatchingState.MATCHED;
 		}else {

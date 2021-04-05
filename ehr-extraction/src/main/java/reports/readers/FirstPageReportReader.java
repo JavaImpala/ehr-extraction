@@ -2,15 +2,16 @@ package reports.readers;
 
 import java.util.Iterator;
 import java.util.Optional;
-import java.util.function.Supplier;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import reports.ProfilReportMaker;
 import util.endable.EndableLineParser;
+import util.lineParser.TextLine;
 import util.matcher.Matcher;
 import util.matcher.MatchingState;
+import util.pageProcessor.Page;
 import util.pageProcessor.PageParser;
 
 public class FirstPageReportReader implements PageParser{
@@ -29,16 +30,16 @@ public class FirstPageReportReader implements PageParser{
 	}
 
 	@Override
-	public boolean tryToProccessPage(Supplier<Iterator<String>> lines) {
+	public boolean tryToProccessPage(Page page) {
 		
 		//validate that its a reportPage
 		
-		Iterator<String> matchIterator=lines.get();
+		Iterator<TextLine> matchIterator=page.getStructPage().lines().iterator();
 		Matcher validator =  ReportStartMatcher.startMatcher.get();
 		
 		while(matchIterator.hasNext()) {
 			
-			String next=matchIterator.next();
+			TextLine next=matchIterator.next();
 			
 			//System.out.println("validating "+next);
 			
@@ -65,11 +66,11 @@ public class FirstPageReportReader implements PageParser{
 		
 		//parse
 		if(validator.getState()==MatchingState.MATCHED) {
-			Iterator<String> readIterator=lines.get();
+			Iterator<TextLine> readIterator=page.getStructPage().lines().iterator();
 			
 			while(readIterator.hasNext()) {
 				
-				String line =readIterator.next();
+				TextLine line =readIterator.next();
 				
 			
 				

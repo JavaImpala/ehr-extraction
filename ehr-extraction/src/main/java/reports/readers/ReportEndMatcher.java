@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 import util.matcher.ChainMatch;
 import util.matcher.Matcher;
-import util.matcher.RetryMatcher;
+import util.matcher.RetryRegexMatcher;
 
 /* 
     Kvitteringer i plan/rapport: 20
@@ -28,6 +28,6 @@ public class ReportEndMatcher {
 	//Utført\\s*tidspunkt:\\s*((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4})\\sKlokkeslett:.*
 	public static final Supplier<Matcher> endMatcher=()->new ChainMatch.Builder()
 			.addSingleLinePattern(Pattern.compile("^Kvitteringer.*"))
-			.addMatcher(RetryMatcher.create(Pattern.compile("^(\\d+).*(\\bSkrevet\\b.*\\bav\\b:)\\s*(\\b\\p{Lu}.*\\b).*Utført\\s*tidspunkt:\\s*((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4})\\sKlokkeslett:.*"),3))
+			.addMatcher(RetryRegexMatcher.create(Pattern.compile("^(\\d+).*(\\bSkrevet\\b.*\\bav\\b:)\\s*(\\b\\p{Lu}.*\\b).*Utført\\s*tidspunkt:\\s*((3[01]|[12][0-9]|0[1-9]).(1[0-2]|0[1-9]).[0-9]{4})\\sKlokkeslett:.*"),3))
 			.build();
 }

@@ -1,9 +1,9 @@
 package util.pageProcessor;
 
 import java.util.Iterator;
-import java.util.function.Supplier;
 
 import util.endable.EndableLineParser;
+import util.lineParser.TextLine;
 
 public class SimplePageProcessor implements PageParser{
 	
@@ -14,9 +14,9 @@ public class SimplePageProcessor implements PageParser{
 	}
 
 	@Override
-	public boolean tryToProccessPage(Supplier<Iterator<String>> lines) {
+	public boolean tryToProccessPage(Page page) {
 		
-		Iterator<String> parseIterator = lines.get();
+		Iterator<TextLine> parseIterator = page.getStructPage().lines().iterator();
 		
 		while(parseIterator.hasNext()) {
 			parser.readLine(parseIterator.next());
