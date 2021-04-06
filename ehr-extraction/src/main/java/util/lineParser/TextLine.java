@@ -5,6 +5,7 @@ import java.util.List;
 
 public class TextLine {
 
+	private final PagePartition partition;
 	
 	private final Double y;
 	private final double height;
@@ -14,13 +15,14 @@ public class TextLine {
 	
 	private final List<TextLineWord> words=new ArrayList<>();
 	
-	private TextLine(double y, double height) {
+	private TextLine(PagePartition partition,double y, double height) {
 		this.y = y;
 		this.height = height;
+		this.partition=partition;
 	}
 	
-	public static TextLine create(double y, double height) {
-		return new TextLine(y, height);
+	public static TextLine create(PagePartition partition,double y, double height) {
+		return new TextLine(partition,y, height);
 	}
 	public Double getY() {
 		return y;
