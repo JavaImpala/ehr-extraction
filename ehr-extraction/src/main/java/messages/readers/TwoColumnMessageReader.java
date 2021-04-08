@@ -90,8 +90,6 @@ public class TwoColumnMessageReader implements EndableLineParser{
 						clusteredBreaks.getClassMin(clusteredBreaks.numClassses()-1),
 						Double.POSITIVE_INFINITY));
 		
-		
-		
 		//sorterer ord til kolonner
 		for(TextLine line:lines) {
 			
