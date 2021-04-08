@@ -59,8 +59,6 @@ public class ProfilCarePlanMaker implements EndableLineParser{
 		return new ProfilCarePlanMaker(plan);
 	}
 	
-
-	
 	@Override
 	public void readLine(TextLine line) {
 		this.parser.readLine(line);

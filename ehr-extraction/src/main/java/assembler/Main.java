@@ -1,8 +1,8 @@
 package assembler;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -14,6 +14,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import messages.ProfilMessageParserManager;
 import reports.ProfilCarePlanPageParserManager;
 import util.pageProcessor.Page;
 import util.pageProcessor.PageParserManager;
@@ -33,6 +34,7 @@ public class Main {
 		
 		List<Supplier<PageParserManager>> pageParsers=new ArrayList<>();
 		pageParsers.add(()->ProfilCarePlanPageParserManager.create());
+		pageParsers.add(()->ProfilMessageParserManager.create());
 		
 		//lager reportMaker
 		MutableObject<Optional<PageParserManager>> currentManager=new MutableObject<>(Optional.empty());	
@@ -49,8 +51,6 @@ public class Main {
 					
 					log.info("");
 					log.info("mottar side");
-					
-					System.out.println("ny side");
 					
 					if(currentManager.getValue().isPresent()) {
 						log.info("leser side i current pageSupplier "+currentManager.getValue().get().getClass());
@@ -101,18 +101,19 @@ public class Main {
 		
 		private PageLineSupplier(String location,Consumer<Page> listener) {
 			
-			int pageNumber=1;
+			int pageNumber=600;
 			
 			while(true) {
 				try {
 					
 					listener.accept(
 							new Page(
+									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm1.txt"),
 									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm6.txt"),
-									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm6.txt"),
-									new StructPage(fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_struct.hocr"))));
-					
+									new StructPage(new File(location+"/image-"+String.format("%03d",pageNumber)+"-proc_struct_font_300.hocr"),new File(location+"/image-"+String.format("%03d",pageNumber)+"-segments.xml"))));
 					pageNumber++;
+					
+					break;
 				}catch(Exception e) {
 					System.out.println("break at page: "+pageNumber);
 					e.printStackTrace();
@@ -124,8 +125,6 @@ public class Main {
 		}
 		
 		private List<String> fileToTextLines(String path) throws Exception{
-			System.out.println(path);
-			
 			FileReader reader=new FileReader(path);
 			List<String> lines=new BufferedReader(reader).lines().collect(Collectors.toList());
 		

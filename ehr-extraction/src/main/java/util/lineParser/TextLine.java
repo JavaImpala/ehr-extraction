@@ -5,7 +5,16 @@ import java.util.List;
 
 public class TextLine {
 
-	private final PagePartition partition;
+	
+
+	@Override
+	public String toString() {
+		return "TextLine [hocrPartition=" + hocrPartition + ", openCVPart=" + openCVPart + ", y=" + y + ", height="
+				+ height + ", tallestWord=" + tallestWord + ", shortestWord=" + shortestWord + "]";
+	}
+
+	private final HocrPartition hocrPartition;
+	private final OpenCVPartition openCVPart;
 	
 	private final Double y;
 	private final double height;
@@ -14,15 +23,19 @@ public class TextLine {
 	private double shortestWord=-1;
 	
 	private final List<TextLineWord> words=new ArrayList<>();
+
+
 	
-	private TextLine(PagePartition partition,double y, double height) {
+	
+	private TextLine(HocrPartition hocrPartition,OpenCVPartition openCVPart,double y, double height) {
 		this.y = y;
 		this.height = height;
-		this.partition=partition;
+		this.hocrPartition=hocrPartition;
+		this.openCVPart=openCVPart;
 	}
 	
-	public static TextLine create(PagePartition partition,double y, double height) {
-		return new TextLine(partition,y, height);
+	public static TextLine create(HocrPartition hocrPartition,OpenCVPartition openCVPart, double y, double height) {
+		return new TextLine(hocrPartition,openCVPart, y, height);
 	}
 	public Double getY() {
 		return y;
@@ -30,6 +43,15 @@ public class TextLine {
 	public double getHeight() {
 		return height;
 	}
+	
+	public HocrPartition getHocrPartition() {
+		return hocrPartition;
+	}
+
+	public OpenCVPartition getOpenCVPart() {
+		return openCVPart;
+	}
+
 	
 	public void addWord(TextLineWord word) {
 		this.words.add(word);
@@ -63,13 +85,5 @@ public class TextLine {
 		}
 		
 		return line.toString().trim();
-	}
-	
-
-	@Override
-	public String toString() {
-		return "TextLine [y=" + y + ", height=" + height + ", words=" + words + "]";
-	}
-	
-	
+	}	
 }

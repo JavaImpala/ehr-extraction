@@ -1,0 +1,33 @@
+package util.matcher;
+
+import java.util.function.Predicate;
+
+import util.lineParser.TextLine;
+
+public class SingleLineMatcher implements Matcher{
+	private MatchingState state=MatchingState.READY;
+	private final Predicate<TextLine> predicate;
+
+	private SingleLineMatcher(Predicate<TextLine> predicate) {
+		this.predicate=predicate;
+	}
+
+	public static Matcher wrapPattern(Predicate<TextLine> predicate) {
+		return new SingleLineMatcher(predicate);
+	}
+
+	@Override
+	public void readLine(TextLine line) {
+		if(predicate.test(line)) {
+			state=MatchingState.MATCHED;
+		}else {
+			state=MatchingState.UNMATCHED;
+		}
+	}
+
+	@Override
+	public MatchingState getState() {
+		return state;
+	}
+
+}

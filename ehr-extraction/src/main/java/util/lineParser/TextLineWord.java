@@ -60,6 +60,24 @@ public class TextLineWord {
 				parentLine);
 	}
 	
+	public static TextLineWord createWithoutParent(
+			double x, 
+			double y, 
+			double width, 
+			double height, 
+			String word,
+			double fontSize) {
+		return new TextLineWord(
+				x, 
+				y, 
+				y,
+				width,
+				height, 
+				fontSize,
+				word,
+				null);
+	}	
+	
 	public double getX() {
 		return x;
 	}
@@ -89,5 +107,7 @@ public class TextLineWord {
 	@Override
 	public String toString() {
 		return "TextLineWord [fontSize=" + fontSize + ", word=" + word + "]";
-	}	
+	}
+
+	
 }
