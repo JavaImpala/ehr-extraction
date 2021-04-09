@@ -51,7 +51,6 @@ public class HocrTable {
 		return rows;
 	}
 	
-	
 	public static class HocrTableRow{
 		private List<List<Optional<TextInColumn>>> srcColumns=new ArrayList<>();
 		
