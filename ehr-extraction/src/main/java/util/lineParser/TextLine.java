@@ -7,11 +7,6 @@ public class TextLine {
 
 	
 
-	@Override
-	public String toString() {
-		return "TextLine [hocrPartition=" + hocrPartition + ", openCVPart=" + openCVPart + ", y=" + y + ", height="
-				+ height + ", tallestWord=" + tallestWord + ", shortestWord=" + shortestWord + "]";
-	}
 
 	private final HocrPartition hocrPartition;
 	private final OpenCVPartition openCVPart;
@@ -86,4 +81,11 @@ public class TextLine {
 		
 		return line.toString().trim();
 	}	
+	
+
+	@Override
+	public String toString() {
+		return "TextLine [hocrPartition=" + hocrPartition + ", openCVPart=" + openCVPart + ", y=" + y + ", height="
+				+ height + ", tallestWord=" + tallestWord + ", shortestWord=" + shortestWord + "]";
+	}
 }
