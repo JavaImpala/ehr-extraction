@@ -25,7 +25,10 @@ public class OpenCVXMLPartition {
 
 
 	public void setSegment(List<XMLSegment> segments) {
-		this.segment = segments;
+		if(segments!=null) {
+			this.segment = segments;
+		}
+		
 	}
 	
 

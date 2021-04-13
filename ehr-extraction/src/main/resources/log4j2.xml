@@ -23,7 +23,7 @@
         	<appender-ref ref="console" />
 	    </logger>
 	    
-	    <logger name="NormalReportLineParser" additivity="false" level="info">
+	    <logger name="NormalReportLineParser" additivity="false" level="off">
         	<appender-ref ref="console" />
 	    </logger>
 	    

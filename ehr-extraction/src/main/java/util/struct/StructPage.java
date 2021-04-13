@@ -37,6 +37,8 @@ public class StructPage {
 			
 			OpenCVXMLPartition partitions=objectMapper.readValue(segmentFile,OpenCVXMLPartition.class);
 			
+			
+			
 			List<OpenCVPartition> partitionRectangles=partitions.getSegment()
 					.stream()
 					.map(s->OpenCVPartition.create(s.getX(),s.getY(),s.getWidth(),s.getHeight()))

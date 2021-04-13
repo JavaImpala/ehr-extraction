@@ -18,6 +18,12 @@ public class MessageSectionReader implements EndableLineParser{
 				return new TwoColumnMessageReader();
 			});
 		
+		subParsers.put(
+				"Legemidler",
+				()->{
+					return new MedicationMessageReader();
+				});
+		
 	}
 	
 	private static final Supplier<EndableLineParser> dummyParser=()->EndableWrapper.wrap(l->{});

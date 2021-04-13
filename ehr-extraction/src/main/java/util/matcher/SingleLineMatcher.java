@@ -12,7 +12,7 @@ public class SingleLineMatcher implements Matcher{
 		this.predicate=predicate;
 	}
 
-	public static Matcher wrapPattern(Predicate<TextLine> predicate) {
+	public static Matcher wrapPredicate(Predicate<TextLine> predicate) {
 		return new SingleLineMatcher(predicate);
 	}
 

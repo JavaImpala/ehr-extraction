@@ -79,6 +79,8 @@ public class SequenceLineParsers implements EndableLineParser{
 				
 				TextLine s=undigested.get(head);
 				
+				log.info(hashCode()+" vi har nok "+s.getLineConcatString());
+				
 				if(currentEater==null) {
 					if(head!=0) {
 						throw new IllegalArgumentException("det skjer noe jeg ikke forstår"); 

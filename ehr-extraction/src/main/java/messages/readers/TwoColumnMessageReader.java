@@ -24,12 +24,13 @@ public class TwoColumnMessageReader implements EndableLineParser{
 	private boolean isEnded=false;
 	
 	public TwoColumnMessageReader() {
-		System.out.println("lager TwoColumnMessageReader");
+		
 	}
 
 	@Override
 	public void readLine(TextLine line) {
 		if(header==null || header=="") {
+			System.out.println("header "+line.getLineConcatString());
 			header=line.getLineConcatString();
 		}else {
 			lines.add(line);
@@ -75,7 +76,7 @@ public class TwoColumnMessageReader implements EndableLineParser{
 			
 			entries.add(currentEntry);
 			
-			System.out.println(currentEntry);
+			//System.out.println(currentEntry);
 		}
 		
 		

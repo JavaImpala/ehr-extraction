@@ -15,7 +15,7 @@ import util.lineParser.TextLineWord;
 public class HocrColumnSegments {
 	
 	private final List<TextLine> srcLines=new ArrayList<>();
-	private static final double defaultWordDistBreak=50d;
+	private static final double defaultWordDistBreak=40d; //21 målt på 300 dpi
 
 	public HocrColumnSegments() {
 		

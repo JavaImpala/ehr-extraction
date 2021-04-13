@@ -17,6 +17,13 @@ public class OpenCVPartition {
 	public static OpenCVPartition create(double x1, double y1, double width, double height) {
 		return new OpenCVPartition(x1, y1,width,height);
 	}
+
+	@Override
+	public String toString() {
+		return "OpenCVPartition [rectangle=" + rectangle + "]";
+	}
+	
+	
 	
 	
 }

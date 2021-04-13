@@ -5,8 +5,7 @@ import java.util.function.Supplier;
 
 import messages.readers.FirstPageMessageReader;
 import messages.readers.NormalPageMessageReader;
-import reports.ProfilReportMaker;
-import reports.readers.ReportEndMatcher;
+import util.matcher.SingleLineMatcher;
 import util.pageProcessor.PageParser;
 import util.pageProcessor.PageParserManager;
 import util.sequence.SequenceLineParsers;
@@ -21,16 +20,36 @@ public class ProfilMessageParserManager implements PageParserManager{
 		
 	
 		
-		ProfilMessageMaker reportMaker=ProfilMessageMaker.create();
+		ProfilMessageSectionMaker reportMaker=ProfilMessageSectionMaker.create();
 		
 		SequenceLineParsers reader=new SequenceLineParsers.Builder()
+				.addListener(
+						SimpleSequenceLineParser.create(
+							l->{
+								System.out.println("in top "+l.getLineConcatString());
+							},
+							()->Optional.empty(),
+							()->Optional.empty()
+						))
 				.addListener(
 					SimpleSequenceLineParser.create(
 						l->{
 							reportMaker.readLine(l);
 						},
-						()->Optional.empty(),
-						()->Optional.of(ReportEndMatcher.endMatcher.get())
+						()->Optional.of(
+								SingleLineMatcher.wrapPredicate(
+										l->{
+							
+											if(l.getFontSize()>19 && l.getFilling()>0.9) {
+												return true;
+											}
+											
+											return false;
+											
+											
+										}
+									)),
+						()->Optional.empty()
 					))
 				.build();
 		

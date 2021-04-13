@@ -28,7 +28,7 @@ public class Main {
 		
 		log.info("starting application");
 		
-		String location="/media/tor003/2A9C-E69E/forskninguttrekkABB050321full-psm1";
+		String location="/media/tor003/pact/forskninguttrekkABB050321full-psm1";
 		
 		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
 		
@@ -101,19 +101,19 @@ public class Main {
 		
 		private PageLineSupplier(String location,Consumer<Page> listener) {
 			
-			int pageNumber=600;
+			int pageNumber=200;
 			
 			while(true) {
 				try {
-					
+					System.out.println("leser side: "+pageNumber);
 					listener.accept(
 							new Page(
 									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm1.txt"),
 									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm6.txt"),
-									new StructPage(new File(location+"/image-"+String.format("%03d",pageNumber)+"-proc_struct_font_300.hocr"),new File(location+"/image-"+String.format("%03d",pageNumber)+"-segments.xml"))));
+									new StructPage(new File(location+"/image-"+String.format("%03d",pageNumber)+"-proc_struct.hocr"),new File(location+"/image-"+String.format("%03d",pageNumber)+"-segments.xml"))));
 					pageNumber++;
 					
-					break;
+					
 				}catch(Exception e) {
 					System.out.println("break at page: "+pageNumber);
 					e.printStackTrace();

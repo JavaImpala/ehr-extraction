@@ -15,7 +15,8 @@ public class TextLine {
 	private final double height;
 	
 	private double tallestWord=-1;
-	private double shortestWord=-1;
+	
+	private double filling=-1;
 	
 	private final List<TextLineWord> words=new ArrayList<>();
 
@@ -54,19 +55,31 @@ public class TextLine {
 		if(tallestWord<word.getHeight()) {
 			tallestWord=word.getFontSize();
 		}
-		
-		if(shortestWord>word.getHeight() || shortestWord<0) {
-			shortestWord=word.getFontSize();
-		}
+		filling=-1;
 	}
 	
-	public double getTallestWord() {
-		return tallestWord;
+	public double getFilling() {
+		
+		
+		
+		if(filling<0) {
+			double sumWidth=0;
+			double sumArea=0;
+			
+			for(TextLineWord word:words) {
+				
+				sumWidth=sumWidth+word.getWidth();
+				
+				sumArea=sumArea+(word.getWidth()*word.getHeight());
+			}
+			
+			filling=sumArea/(sumWidth*getHeight());
+		}
+		
+		return filling;
 	}
 
-	public double getShortestWord() {
-		return shortestWord;
-	}
+	
 	
 	public List<TextLineWord> getWords(){
 		return words;
@@ -86,6 +99,12 @@ public class TextLine {
 	@Override
 	public String toString() {
 		return "TextLine [hocrPartition=" + hocrPartition + ", openCVPart=" + openCVPart + ", y=" + y + ", height="
-				+ height + ", tallestWord=" + tallestWord + ", shortestWord=" + shortestWord + "]";
+				+ height + ", tallestWord=" + tallestWord + "]";
 	}
+
+	public double getFontSize() {
+		return this.tallestWord;
+	}
+
+	
 }
