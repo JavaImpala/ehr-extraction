@@ -1,0 +1,5 @@
+Last ned opencv fra https://opencv.org/releases/ (sources )
+
+lag egen build mappe, kjør cmake -D BUILD_SHARED_LIBS=OFF .. fra build mappe, skjekk at ant jini og java wrapper er satt. kjør deretter make -j2 (eller 1 hvis du har lite minne), trenger cmake for dette.
+
+ last inn jar som nå skal være bygget i bin til eget library som inkluderes i eclipseprosjekt. 
