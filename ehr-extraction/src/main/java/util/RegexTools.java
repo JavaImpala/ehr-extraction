@@ -23,6 +23,20 @@ public class RegexTools {
         return  m.find() ? m.group(1): null;
     }
 	
+	public static String getAllValuesAfter(String testStr, String key){
+        Pattern p = Pattern.compile("(?<="+key+"\\s)(.*)");
+        Matcher m = p.matcher(testStr);
+       
+        return  m.find() ? m.group(1): null;
+    }
+	
+	public static String getValuesAfter(String testStr, String key,int count){
+        Pattern p = Pattern.compile("(?<="+key+"\\s)(((\\w+)(\\s*)){"+count+"})");
+        Matcher m = p.matcher(testStr);
+       
+        return  m.find() ? m.group(1): null;
+    }
+	
 	public static String getValueAfterAndBefore(String testStr, String beforeTarget,String afterTarget){
         Pattern p = Pattern.compile("(?<="+beforeTarget+")(.+?)(?=("+afterTarget+"))");
         Matcher m = p.matcher(testStr);

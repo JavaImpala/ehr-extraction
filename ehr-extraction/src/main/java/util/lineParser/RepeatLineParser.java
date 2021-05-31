@@ -32,7 +32,6 @@ public class RepeatLineParser implements LineParser{
 		this.readers = readers;
 		
 		this.shouldRestart=this.shouldRestartSupplier.get();
-		this.currentParser=this.readers.get();
 	}
 	
 	public static RepeatLineParser create(Supplier<Matcher> shouldRestartSupplier, Supplier<EndableLineParser> readers) {
@@ -48,6 +47,10 @@ public class RepeatLineParser implements LineParser{
 	}
 	
 	private void consumeFromQueue(int head) {
+		if(currentParser==null) {
+			currentParser=this.readers.get();
+		}
+		
 		log.info(hashCode()+" enter consumeFromQueue at "+head+" ("+undigested.size()+"). Current matcher har hashCode():"+shouldRestart.hashCode()+" og state "+shouldRestart.getState());
 		
 		if(head>=undigested.size()) {

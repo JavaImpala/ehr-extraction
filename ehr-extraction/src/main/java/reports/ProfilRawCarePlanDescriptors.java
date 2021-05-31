@@ -1,9 +1,6 @@
 package reports;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class CarePlan {
+public class ProfilRawCarePlanDescriptors{
 	private String planCategory="";
 	private String planArea="";
 	private String action="";
@@ -12,16 +9,24 @@ public class CarePlan {
 	
 	private String author;
 	
-	private List<CarePlanDescription> descriptions=new ArrayList<>();
-
 	public String getPlanCategory() {
 		return planCategory;
 	}
-
+	
+	/**
+	 * Plankategori: Helsehjelp
+	 * @param planCategory
+	 */
+	
 	public void setPlanCategory(String planCategory) {
 		this.planCategory = planCategory;
 	}
-
+	
+	/**
+	 * Planområde: Kontakt lege/nettverk/pårørend
+	 * @param planCategory
+	 */
+	
 	public String getPlanArea() {
 		return planArea;
 	}
@@ -34,10 +39,20 @@ public class CarePlan {
 		return action;
 	}
 
+	/**
+	 * Tiltak:
+	 * 
+	 * @param action
+	 */
 	public void setAction(String action) {
 		this.action = action;
 	}
 
+	/**
+	 * [0-9]{2}[.][0-9]{2}[.][0-9]{4}
+	 * @return
+	 */
+	
 	public String getStartDate() {
 		return startDate;
 	}
@@ -46,6 +61,11 @@ public class CarePlan {
 		this.startDate = startDate;
 	}
 
+	/**
+	 * [0-9]{2}[.][0-9]{2}[.][0-9]{4}
+	 * @return
+	 */
+	
 	public String getEndDate() {
 		return endDate;
 	}
@@ -61,12 +81,4 @@ public class CarePlan {
 	public void setAuthor(String author) {
 		this.author = author;
 	}
-
-	public List<CarePlanDescription> getDescriptions() {
-		return descriptions;
-	}
-
-	public void addDescription(CarePlanDescription description) {
-		this.descriptions.add(description);
-	}	 
 }

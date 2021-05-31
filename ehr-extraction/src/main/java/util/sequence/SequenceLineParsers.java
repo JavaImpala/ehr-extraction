@@ -101,6 +101,7 @@ public class SequenceLineParsers implements EndableLineParser{
 					
 					if(currentEater.eater.isEnded()) {
 						currentIndex.increment();
+						currentEater.eater.end();
 						currentEater=null;
 						
 						log.info(hashCode()+" FORDI EATER ER ENDED GÅR VI TIL NESTE!=> "+currentIndex.intValue()+"/"+makers.size()+" ");
@@ -114,6 +115,7 @@ public class SequenceLineParsers implements EndableLineParser{
 						}
 					}else {
 						currentEater=null;
+						
 						consumeFood(0);
 					}
 					
@@ -124,6 +126,7 @@ public class SequenceLineParsers implements EndableLineParser{
 				}else if(currentEater.state==LineEaterState.GOTONEXT) {
 					
 					currentIndex.increment();
+					currentEater.eater.end();
 					currentEater=null;
 					
 					log.info(hashCode()+" VI GÅR TIL NESTE!=> "+currentIndex.intValue()+"/"+makers.size()+" "+undigested.get(0));

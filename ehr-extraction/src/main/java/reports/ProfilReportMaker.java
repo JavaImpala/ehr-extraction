@@ -1,6 +1,7 @@
 package reports;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +25,7 @@ public class ProfilReportMaker implements ObservableLineParser{
 	
 	private RepeatLineParser lineParser;
 	
-	private ProfilReportMaker() {
+	private ProfilReportMaker(Consumer<ProfilReport> reportConsumer) {
 		
 		this.lineParser=RepeatLineParser.create(
 				()->SingleRegexLineMatcher.wrapPattern(initiateRegexPattern),
@@ -58,6 +59,10 @@ public class ProfilReportMaker implements ObservableLineParser{
 								.build(),
 							()->{
 								report.close();
+								
+								reportConsumer.accept(report);
+								
+								
 							});
 				});
 		
@@ -65,8 +70,8 @@ public class ProfilReportMaker implements ObservableLineParser{
 	
 	
 	
-	public static  ProfilReportMaker create() {
-		return new  ProfilReportMaker();
+	public static ProfilReportMaker create(Consumer<ProfilReport> reportConsumer) {
+		return new ProfilReportMaker(reportConsumer);
 	}
 	
 	@Override

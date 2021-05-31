@@ -5,8 +5,6 @@ import util.lineParser.TextLine;
 public class ObservableEndableLineParser implements EndableLineParser{
 
 	private final EndableLineParser wrapped;
-	
-	
 	private final Runnable onEnded;
 	
 	private ObservableEndableLineParser(EndableLineParser wrapped, Runnable onEnding) {

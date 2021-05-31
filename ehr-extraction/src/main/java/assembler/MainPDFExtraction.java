@@ -14,43 +14,56 @@ import org.apache.commons.lang3.mutable.MutableObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ca.uhn.fhir.context.FhirContext;
+import ca.uhn.fhir.rest.client.api.IGenericClient;
+import fhir.FHIRResources;
 import messages.ProfilMessageParserManager;
+import messages.readers.MessageSectionReader;
 import reports.ProfilCarePlanPageParserManager;
 import util.pageProcessor.Page;
 import util.pageProcessor.PageParserManager;
 import util.struct.StructPage;
 
-public class Main {
+public class MainPDFExtraction {
 	
-	private final static Logger log=LogManager.getLogger(Main.class.getSimpleName());
+	private final static Logger log=LogManager.getLogger(MainPDFExtraction.class.getSimpleName());
 	
 	public static void main(String[] args ){  
 		
 		log.info("starting application");
 		
-		String location="/media/tor003/pact/forskninguttrekkABB050321full-psm1";
+		FhirContext ctx=FhirContext.forR4();
+		ctx.getRestfulClientFactory().setSocketTimeout(60*10*1000);
 		
-		//number-date(dd.mm.yyyy)-Skrevet av: [name]-Rapport-Rapportert dato: date(dd.mm.yyy
+		//String serverBase = "http://fhirtest.uhn.ca/baseDstu2";
+		String serverBase = "http://localhost:8080/fhir";
+		
+		IGenericClient client = ctx.newRestfulGenericClient(serverBase);	
+		
+		
+		System.out.println("vi er her?");
+		
+		String location="/media/tor003/kingston/forskninguttrekkABB050321full-psm1";
+		
+		FHIRResources bundle = new FHIRResources(ctx);
 		
 		List<Supplier<PageParserManager>> pageParsers=new ArrayList<>();
-		pageParsers.add(()->ProfilCarePlanPageParserManager.create());
+		pageParsers.add(()->ProfilCarePlanPageParserManager.create(bundle));
 		pageParsers.add(()->ProfilMessageParserManager.create());
 		
 		//lager reportMaker
 		MutableObject<Optional<PageParserManager>> currentManager=new MutableObject<>(Optional.empty());	
-		
 		MutableInt counter=new MutableInt();
 		
 		new PageLineSupplier(
 				location,
 				pageLineIteratorSupplier->{
 					
-					
-					
 					counter.increment();
 					
 					log.info("");
-					log.info("mottar side");
+					log.info("mottar side "+counter.getValue());
+					System.out.println("mottar side "+counter.getValue());
 					
 					if(currentManager.getValue().isPresent()) {
 						log.info("leser side i current pageSupplier "+currentManager.getValue().get().getClass());
@@ -94,6 +107,14 @@ public class Main {
 					
 					log.info("klarte ikke å lese side");
 				});
+		
+		System.out.println("FØRER IKKE TIL DB COMMIT!");
+		
+		for(String s:MessageSectionReader.dontSupport) {
+			System.out.println(s);
+		}
+		
+		client.transaction().withBundle(bundle.getBundle()).execute();
     }  
 	
 	private static class PageLineSupplier{
@@ -101,11 +122,11 @@ public class Main {
 		
 		private PageLineSupplier(String location,Consumer<Page> listener) {
 			
-			int pageNumber=200;
+			int pageNumber=1;
 			
 			while(true) {
 				try {
-					System.out.println("leser side: "+pageNumber);
+					
 					listener.accept(
 							new Page(
 									fileToTextLines(location+"/image-"+String.format("%03d",pageNumber)+"-proc_psm1.txt"),
@@ -115,7 +136,9 @@ public class Main {
 					
 					
 				}catch(Exception e) {
-					System.out.println("break at page: "+pageNumber);
+					
+					
+					
 					e.printStackTrace();
 					break;
 					//e.printStackTrace();

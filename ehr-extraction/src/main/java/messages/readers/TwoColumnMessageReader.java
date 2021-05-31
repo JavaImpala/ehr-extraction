@@ -30,16 +30,10 @@ public class TwoColumnMessageReader implements EndableLineParser{
 	@Override
 	public void readLine(TextLine line) {
 		if(header==null || header=="") {
-			System.out.println("header "+line.getLineConcatString());
 			header=line.getLineConcatString();
 		}else {
 			lines.add(line);
 		}
-		
-		
-		
-		
-		
 	}
 
 	@Override
@@ -68,11 +62,18 @@ public class TwoColumnMessageReader implements EndableLineParser{
 		
 		
 		for(HocrTableRow tr:table.rows()){
+			
+			
 			LegendContent currentEntry=new LegendContent();
 			List<Optional<List<TextLine>>> b = tr.get();
 			
-			b.get(0).ifPresent(t->t.forEach(e->currentEntry.addLegend(e.getLineConcatString()+" ")));
-			b.get(1).ifPresent(t->t.forEach(e->currentEntry.addContent(e.getLineConcatString())));
+			if(b!=null && !b.isEmpty()) {
+				b.get(0).ifPresent(t->t.forEach(e->currentEntry.addLegend(e.getLineConcatString()+" ")));
+			}
+			
+			if(b!=null && b.size()>1) {
+				b.get(1).ifPresent(t->t.forEach(e->currentEntry.addContent(e.getLineConcatString())));
+			}
 			
 			entries.add(currentEntry);
 			

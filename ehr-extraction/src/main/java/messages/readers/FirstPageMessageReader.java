@@ -39,7 +39,6 @@ public class FirstPageMessageReader implements PageParser{
 	
 		SequenceLineParser reader = ListenFrom.listenFrom(
 					EndableWrapper.wrap(l->{
-						
 						reading.setTrue();
 					
 						parser.readLine(l);
@@ -49,7 +48,6 @@ public class FirstPageMessageReader implements PageParser{
 				);
 		
 		for(TextLine l:page.getStructPage().lines()) {
-			
 			reader.readLine(l);
 		}
 		

@@ -24,7 +24,7 @@ public class MedicationMessageReader implements EndableLineParser{
 	private boolean isEnded=false;
 	
 	public MedicationMessageReader() {
-		System.out.println("lager MedicationReader");
+		//System.out.println("lager MedicationReader");
 	}
 
 	@Override
@@ -61,16 +61,16 @@ public class MedicationMessageReader implements EndableLineParser{
 		int rc=0;
 		
 		for(HocrTableRow tr:table.rows()){
-			System.out.println("row "+rc);
+			//System.out.println("row "+rc);
 			
 			int i=0;
 			//System.out.println("fungerer dette?");
 			for(Optional<List<TextLine>> v:tr.get()) {
-				System.out.println("col "+i);
+				//System.out.println("col "+i);
 				
 				if(v.isPresent()) {
 					for(TextLine a:v.get()) {
-						System.out.println(a.getLineConcatString());
+						//System.out.println(a.getLineConcatString());
 					}
 				}
 				
@@ -80,8 +80,7 @@ public class MedicationMessageReader implements EndableLineParser{
 			rc++;
 		}
 		
-		System.out.println("end medication");
-		System.exit(0);
+		//System.out.println("end medication");
 		
 		isEnded=true;
 	}

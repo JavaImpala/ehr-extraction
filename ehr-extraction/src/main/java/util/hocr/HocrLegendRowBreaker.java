@@ -19,6 +19,16 @@ public class HocrLegendRowBreaker implements HocrRowBreaker{
 		legends.add("Aktuell problemstilling");
 		legends.add("Forløp og behandling");
 		legends.add("Årsak til innleggelse");
+		legends.add("Type forespørsel");
+		legends.add("Spørsmål");
+		legends.add("Tema kodet:");
+		legends.add("Innhold");
+		
+		legends.add("Dato for notat");
+		legends.add("Melding sendt:");
+		legends.add("Meldingsid:");
+		legends.add("Samtykke");
+		legends.add("Utstedelsestidspunkt");
 	}
 	
 	

@@ -18,15 +18,13 @@ public class ProfilMessageParserManager implements PageParserManager{
 	private ProfilMessageParserManager() {
 		//lager parser
 		
-	
-		
 		ProfilMessageSectionMaker reportMaker=ProfilMessageSectionMaker.create();
 		
 		SequenceLineParsers reader=new SequenceLineParsers.Builder()
 				.addListener(
 						SimpleSequenceLineParser.create(
 							l->{
-								System.out.println("in top "+l.getLineConcatString());
+								
 							},
 							()->Optional.empty(),
 							()->Optional.empty()
@@ -34,12 +32,13 @@ public class ProfilMessageParserManager implements PageParserManager{
 				.addListener(
 					SimpleSequenceLineParser.create(
 						l->{
+							//System.out.println("readingLine profilMessageParserManager "+l.getLineConcatString());
 							reportMaker.readLine(l);
 						},
 						()->Optional.of(
 								SingleLineMatcher.wrapPredicate(
 										l->{
-							
+											
 											if(l.getFontSize()>19 && l.getFilling()>0.9) {
 												return true;
 											}

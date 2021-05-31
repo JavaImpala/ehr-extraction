@@ -62,17 +62,28 @@ public class HocrColumnSegments {
 		
 		List<HocrColumn> columns=new ArrayList<>();
 		
-		for(int b=1;b<clusteredBreaks.numClassses();b++) {
+		System.out.println(clusteredBreaks.numClassses()+" "+columnCount);
+		
+		if(clusteredBreaks.numClassses()>1) {
+			for(int b=1;b<clusteredBreaks.numClassses();b++) {
+				columns.add(
+						new HocrColumn(
+								clusteredBreaks.getClassMin(b-1),
+								clusteredBreaks.getClassMin(b)));
+			}
+			
 			columns.add(
 					new HocrColumn(
-							clusteredBreaks.getClassMin(b-1),
-							clusteredBreaks.getClassMin(b)));
+							clusteredBreaks.getClassMin(clusteredBreaks.numClassses()-1),
+							Double.POSITIVE_INFINITY));
+		}else {
+			columns.add(
+				new HocrColumn(0,Double.POSITIVE_INFINITY));
 		}
 		
-		columns.add(
-				new HocrColumn(
-						clusteredBreaks.getClassMin(clusteredBreaks.numClassses()-1),
-						Double.POSITIVE_INFINITY));
+		
+		
+		
 		
 		List<HocrColumnTextLine> outputLines=new ArrayList<>();
 		

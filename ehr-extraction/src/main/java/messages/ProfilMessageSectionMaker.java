@@ -35,11 +35,6 @@ public class ProfilMessageSectionMaker  implements ObservableLineParser{
 				
 			}),
 			()->{
-				System.out.println("");
-			
-				System.out.println("ProfilMessageMaker ny section");
-				
-				
 				MessageSectionReader reader = new MessageSectionReader();
 				
 				return ObservableEndableLineParser.wrap(

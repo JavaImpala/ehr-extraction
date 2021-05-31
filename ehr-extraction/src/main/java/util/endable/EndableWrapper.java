@@ -6,14 +6,20 @@ import util.lineParser.TextLine;
 public class EndableWrapper implements EndableLineParser{
 	
 	private final LineParser listener;
+	private final Runnable onEnded;
 	private boolean isEnded=false;
 	
-	private EndableWrapper(LineParser listener) {
+	private EndableWrapper(LineParser listener,Runnable onEnded) {
 		this.listener = listener;
+		this.onEnded=onEnded;
 	}
 	
 	public static EndableWrapper wrap(LineParser listener) {
-		return new EndableWrapper(listener);
+		return new EndableWrapper(listener,()->{});
+	}
+	
+	public static EndableWrapper wrapWithOnEndedHook(LineParser listener,Runnable onEnded) {
+		return new EndableWrapper(listener,onEnded);
 	}
 
 
@@ -30,6 +36,7 @@ public class EndableWrapper implements EndableLineParser{
 	@Override
 	public void end() {
 		isEnded=true;
+		onEnded.run();
 	}
 
 }

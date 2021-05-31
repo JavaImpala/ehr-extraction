@@ -1,6 +1,7 @@
 package messages.readers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -11,9 +12,21 @@ import util.lineParser.TextLine;
 public class MessageSectionReader implements EndableLineParser{
 	private static final Map<String,Supplier<EndableLineParser>> subParsers=new HashMap<>();
 	
+	public static HashSet<String> dontSupport=new HashSet<>();
+	
 	static {
 		subParsers.put(
 			"Medisinskfaglige opplysninger",
+			()->{
+				return new TwoColumnMessageReader();
+			});
+		subParsers.put(
+			"Forespørsel",
+			()->{
+				return new TwoColumnMessageReader();
+			});
+		subParsers.put(
+			"Notat",
 			()->{
 				return new TwoColumnMessageReader();
 			});
@@ -39,6 +52,8 @@ public class MessageSectionReader implements EndableLineParser{
 			if(subParsers.containsKey(line.getLineConcatString())) {
 				parser=subParsers.get(line.getLineConcatString()).get();
 			}else {
+				dontSupport.add(line.getLineConcatString());
+				
 				parser=dummyParser.get();
 			}
 		}

@@ -1,8 +1,11 @@
 package reports;
 
+import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
+import fhir.FHIRResources;
 import util.endable.EndableLineParser;
 import util.lineParser.LineParser;
 import util.lineParser.RepeatLineParser;
@@ -45,11 +48,9 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 				.build();
 	};
 	
-	private final CarePlan plan;
 	private final LineParser lineParser;
 	
-	private ProfilCarePlanDescriptionMaker(CarePlan plan) {
-		this.plan = plan;
+	private ProfilCarePlanDescriptionMaker(Consumer<Map<String,String>> consumer) {
 		
 		this.lineParser=RepeatLineParser.create(
 				newEntryMatcher,
@@ -59,8 +60,7 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 
 						@Override
 						public void readLine(TextLine line) {
-							// TODO Auto-generated method stub
-							
+							//System.out.println("DESCMAKER "+line.getLineConcatString());
 						}
 
 						@Override
@@ -78,8 +78,8 @@ public class ProfilCarePlanDescriptionMaker implements LineParser{
 				});
 	}
 	
-	public static ProfilCarePlanDescriptionMaker create(CarePlan carePlan) {
-		return new ProfilCarePlanDescriptionMaker(carePlan);
+	public static ProfilCarePlanDescriptionMaker create(Consumer<Map<String,String>> consumer) {
+		return new ProfilCarePlanDescriptionMaker(consumer);
 	}
 
 	@Override

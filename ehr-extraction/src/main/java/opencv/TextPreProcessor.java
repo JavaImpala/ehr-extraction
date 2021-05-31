@@ -103,11 +103,11 @@ public class TextPreProcessor {
         Imgproc.threshold(grayCopy,threshold, 150, 255,Imgproc.THRESH_OTSU);
         
         
-        showWaitDestroy("result",threshold);
+        //showWaitDestroy("result",threshold);
         
         System.out.println("saving "+path.substring(0, path.lastIndexOf('.'))+"-proc.tif");
         
-        //Imgcodecs.imwrite(path.substring(0, path.lastIndexOf('.'))+"-proc.tif", threshold);
+        Imgcodecs.imwrite(path.substring(0, path.lastIndexOf('.'))+"-proc.tif", threshold);
         
         mats.forEach(m->m.release());
     }
@@ -133,7 +133,7 @@ public class TextPreProcessor {
         
         Imgproc.findContours(bw, contours,hierarchy , Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         
-        showWaitDestroy("faewf",bw);
+        //showWaitDestroy("faewf",bw);
         
         double padding=1;
         
